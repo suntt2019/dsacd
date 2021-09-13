@@ -1,24 +1,12 @@
-# sdacd
+# DSACD
+*DSACD: Data Structure and Algorithm Course Design*
 
-## Project setup
-```
-yarn install
-```
+### What is this?
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+* My course design for the data structure and algorithm course
 
-### Compiles and minifies for production
-```
-yarn build
-```
+* A text editor which can edit, encode / decode, search text
 
-### Lints and fixes files
-```
-yarn lint
-```
+### Prototype
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The features are listed in the prototype(in the publish "Prototype") and its introduction.
