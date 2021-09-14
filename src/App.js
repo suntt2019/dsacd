@@ -1,5 +1,7 @@
 import { Multipane, MultipaneResizer } from 'vue-multipane';
-import './style/app.css';
+import Editor from './components/Editor.vue';
+import StartPanel from "./components/StartPanel";
+import './style/App.css';
 
 // var sent_sidebar_warning = false;
 
@@ -116,5 +118,7 @@ export default {
     components: {
         Multipane,
         MultipaneResizer,
+        Editor,
+        StartPanel,
     },
 };

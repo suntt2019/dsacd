@@ -1,12 +1,7 @@
 <template>
   <div id="app">
-<!--    <a-button type="primary" @click="toggleSidebar">Button></a-button>-->
-<!--    <div>-->
-<!--      <a-input-number id="inputNumber" v-model="value" :min="1" :max="10" @change="onChange" />-->
-<!--      当前值：{{ value }}-->
-<!--    </div>-->
     <a-layout>
-
+<!--header-->
       <a-layout-header id="header">
         <a-tooltip placement="right" v-if="showing_editor_bar === 'editor'">
           <template slot="title">
@@ -18,6 +13,7 @@
           <label>DSACD</label>
         </div>
       </a-layout-header>
+<!--menu-->
       <a-layout>
         <a-layout-sider width = 64 >
           <div style="width: 64px">
@@ -51,48 +47,27 @@
             </a-tooltip>
           </div>
         </a-layout-sider>
+<!--major-panel-->
         <a-layout-content>
           <multipane class="major-panel" layout="vertical">
+<!--sidebar-->
             <div id="sidebar-container" class="pane" v-show="showing_sidebar !== null" :style="{ minWidth: '10%', width: '30%', maxWidth: '50%'}">
               sidebar
             </div>
+
             <multipane-resizer v-show="showing_sidebar !== null"></multipane-resizer>
+
+<!--editor-bar-->
             <div id="editor-container" class="pane" :style="{ flexGrow: 1 }">
               <div v-show="showing_editor_bar === 'dummy'">(dummy editor bar)</div>
-              <div v-show="showing_editor_bar === 'start'" style="text-align: center; line-height: 60vh; height: 100%; margin: 10px auto">
-                <a-row :gutter="100" align="middle" style="display:inline-block; width: 900px">
-                  <a-col class="gutter-row" :span="8">
-                    <div class="gutter-box">
-                      <a-button @click="startEdit" class="start-btn">
-                        <label>Import folder</label>
-                        <p>Load all files<br>in the folder</p>
-                      </a-button>
-                    </div>
-                  </a-col>
-                  <a-col class="gutter-row" :span="8">
-                    <div class="gutter-box">
-                      <a-button @click="startEdit" class="start-btn">
-                        <label>Select folder</label>
-                        <p>Don't load files<br>in the folder</p>
-                      </a-button>
-                    </div>
-                  </a-col>
-                  <a-col class="gutter-row" :span="8">
-                    <div class="gutter-box">
-                      <a-button @click="startEdit" class="start-btn">
-                        <label>Store files later</label>
-                        <p class="warn">May lost data<br>before saving</p>
-                      </a-button>
-                    </div>
-                  </a-col>
-                </a-row>
-              </div>
-              <div v-show="showing_editor_bar === 'editor'"> <textarea id="editor"> editor </textarea> </div>
+              <div v-show="showing_editor_bar === 'start'"> <StartPanel :start-edit="startEdit"></StartPanel> </div>
+              <div v-show="showing_editor_bar === 'editor'"> <Editor></Editor> </div>
             </div>
           </multipane>
         </a-layout-content>
       </a-layout>
     </a-layout>
+<!--footer-->
     <div id="footer">
       ©2021-2021 sun123t2.com All rights reserved.
     </div>
