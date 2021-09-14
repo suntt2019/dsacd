@@ -1,0 +1,88 @@
+// DSACD theme: dark (default theme)
+
+@c-theme: #fff;
+
+// background
+@c-selected-background: #777;
+@c-button-background: #585858;
+@c-top-bottom-background: #444;
+@c-menu-background: #333;
+@c-common-background: #252525;
+@c-text-area-background: #1e1e1e;
+
+// text & border
+@c-text: #fff;
+@c-border: #000;
+
+//
+@c-warn: #faad14;
+
+// header
+@header-background: @c-top-bottom-background;
+
+// menu
+@menu-background: @c-menu-background;
+@menu-selected: @c-selected-background;
+
+// sidebar
+@sidebar-background: @c-common-background;
+
+// editor-bar
+@editor-bar-background: @c-text-area-background;
+
+// footer
+@footer-background: @c-top-bottom-background;
+
+// Colors defined by ant-design-vue
+@import '../../../node_modules/ant-design-vue/dist/antd.less'; // 引入官方提供的 less 样式入口文件
+@primary-color: @c-theme; // 全局主色 // menu-selected
+@link-color: @c-selected-background; // 链接色
+@success-color: #52c41a; // 成功色
+@warning-color: #faad14; // 警告色
+@error-color: #f5222d; // 错误色
+@font-size-base: 14px; // 主字号
+@layout-header-background: @menu-background; // menu-background
+@heading-color: @c-text; // 标题色
+@text-color: @c-text; // 主文本色
+@text-color-secondary: rgba(0, 0, 0, 0.45); // 次文本色
+@disabled-color: rgba(0, 0, 0, 0.25); // 失效色
+@border-radius-base: 0px; // 组件/浮层圆角
+@border-color-base: @c-border; // 边框色
+@box-shadow-base: 0 2px 8px rgba(0, 0, 0, 0.15); // 浮层阴影
+
+// Colors map to root variables
+// replacing regular expression:
+// @(.*):.*;
+// --$1: @$1;
+:root{
+  // background
+  --c-selected-background: @c-selected-background;
+  --c-top-bottom-background: @c-top-bottom-background;
+  --c-menu-background: @c-menu-background;
+  --c-common-background: @c-common-background;
+  --c-text-area-background: @c-text-area-background;
+  --c-button-background: @c-button-background;
+
+  // text & border
+  --c-text: @c-text;
+  --c-border: @c-border;
+
+  //
+  --c-warn: @c-warn;
+
+  // header
+  --header-background: @header-background;
+
+  // menu
+  --menu-background: @menu-background;
+  --menu-selected: @menu-selected;
+
+  // sidebar
+  --sidebar-background: @sidebar-background;
+
+  // editor-bar
+  --editor-bar-background: @editor-bar-background;
+
+  // footer
+  --footer-background: @footer-background;
+}
