@@ -1,14 +1,26 @@
 <template>
   <div id="editor">
-    <textarea id="editor-textarea" v-text="text"></textarea>
+    <textarea id="editor-textarea" v-model="text"></textarea>
   </div>
 </template>
 
 <script>
 export default {
+  props: ['sharedData'],
   data() {
     return {
       text: 'initial text',
+    }
+  },
+  methods: {
+    reloadContent() {
+      if(this.sharedData.selectedFile === null) {
+        throw(new Error('Try to reload content from null selected file'));
+      }
+      this.text = this.sharedData.selectedFile.content;
+    },
+    storeContent() {
+      this.sharedData.selectedFile.content = this.text;
     }
   }
 }

@@ -1,36 +1,38 @@
-import { Multipane, MultipaneResizer } from 'vue-multipane';
+import { Multipane, MultipaneResizer } from 'vue-multipane/src/index.js';
 import Editor from './components/Editor.vue';
 import StartPanel from "./components/StartPanel";
+import FileTree from "./components/FileTree";
+import FileButtons from './components/FileButtons';
 import './style/App.css';
 
-// var sent_sidebar_warning = false;
-
-
 export default {
+    mounted() {
+        // this.editor = this.$refs.editor;
+    },
     data() {
         return {
             showing_sidebar : null,
             showing_editor_bar: "start",
             sidebars: {
                 "files": {
-                    width: "10%",
-                    min_width: "10%",
+                    width: "20%",
+                    min_width: "200px",
                     max_width: "50%",
                     component: null,
                 },
-                "encode-decode": {
+                "encode_decode": {
                     width: "20%",
                     min_width: "10%",
                     max_width: "50%",
                     component: null,
                 },
-                "search-replace": {
+                "search_replace": {
                     width: "30%",
                     min_width: "10%",
                     max_width: "50%",
                     component: null,
                 },
-                "search+": {
+                "search_plus": {
                     width: "40%",
                     min_width: "10%",
                     max_width: "50%",
@@ -43,18 +45,19 @@ export default {
                     component: null,
                 },
             },
-            // editor_bars: {
-            //     "dummy": {
-            //         component: null,
-            //     },
-            //     "start": {
-            //         component: null,
-            //     },
-            //     "editor": {
-            //         component: null,
-            //     },
-            // },
             menu_keys: [],
+            sharedData: {
+                fileTree: { // empty tree
+                    root: {
+                        name: 'Empty tree',
+                    }
+                },
+                selectedFile: {
+                    content: 'Default file content',
+                    Saved() {}
+                },
+            },
+            title: 'DSACD',
         };
     },
     methods: {
@@ -81,15 +84,7 @@ export default {
         menuClick(e) {
             if(this.showing_editor_bar === 'editor') {
                 this.menuSwitch(e.key);
-            } // else if(!sent_sidebar_warning) {
-            //     this.notification('warning', 'Please config work space first.',
-            //         'The sidebar could only display after configuring the work space, please config your work space first.');
-            //     sent_sidebar_warning = true;
-            //     setTimeout(function () {
-            //         console.log('finish timer');
-            //         sent_sidebar_warning = false;
-            //     }, 5000);
-            // }
+            }
         },
         menuClose() {
             if(this.showing_sidebar !== null) {
@@ -99,26 +94,30 @@ export default {
         switchEditorBar(key) {
             this.showing_editor_bar = key;
         },
-        startEdit(e) {
-            console.log(e);
+        startEdit() {
             this.switchEditorBar("editor");
         },
         reloadWorkspace() {
             this.switchEditorBar("start");
             this.menuClose();
         },
-        notification(type, message, description) {
-            this.$notification[type]({
-                message: message,
-                description: description,
-                duration: 5,
-            });
-        }
+        fileOnSelect(key, e) {
+            this.$refs.editor.storeContent();
+            this.sharedData.selectedFile = e.node.dataRef;
+            // this.title = '(loading) ' + 'DSACD - ' + this.sharedData.selectedFile.name + ' (loading)';
+            this.sharedData.selectedFile.Load().then(()=>{
+                this.$forceUpdate()
+                this.$refs.editor.reloadContent();
+                this.title = 'DSACD - ' + this.sharedData.selectedFile.title;
+            })
+        },
     },
     components: {
         Multipane,
         MultipaneResizer,
         Editor,
         StartPanel,
+        FileTree,
+        FileButtons,
     },
 };

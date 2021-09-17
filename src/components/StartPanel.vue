@@ -3,7 +3,7 @@
     <a-row :gutter="100" align="middle" style="display:inline-block; width: 900px">
       <a-col class="gutter-row" :span="8">
         <div class="gutter-box">
-          <a-button @click="startEdit" class="start-btn">
+          <a-button @click="importFolder" class="start-btn">
             <label>Import folder</label>
             <p>Load all files<br>in the folder</p>
           </a-button>
@@ -11,7 +11,7 @@
       </a-col>
       <a-col class="gutter-row" :span="8">
         <div class="gutter-box">
-          <a-button @click="startEdit" class="start-btn">
+          <a-button @click="openFolder" class="start-btn">
             <label>Select folder</label>
             <p>Don't load files<br>in the folder</p>
           </a-button>
@@ -30,9 +30,26 @@
 </template>
 
 <script>
+import {GetDir, FileTree} from "../js/files";
+
 export default {
   name: 'StartPanel',
-  props: ['startEdit'],
+  props: ['startEdit', 'sharedData'],
+  methods: {
+    importFolder(){
+      GetDir((dir)=>{
+        this.sharedData.fileTree = new FileTree(dir);
+        this.sharedData.fileTree.Scan();
+        this.startEdit();
+      });
+    },
+    openFolder(){
+      GetDir((dir)=>{
+        this.sharedData.fileTree = new FileTree(dir);
+        this.startEdit();
+      });
+    },
+  },
 }
 </script>
 

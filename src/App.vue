@@ -10,7 +10,7 @@
           <a-icon id="reload-button" :style="{fontSize: '20px'}" type="folder-open" @click="reloadWorkspace"/>
         </a-tooltip>
         <div id="header-title">
-          <label>DSACD</label>
+          <label>{{title}}</label>
         </div>
       </a-layout-header>
 <!--menu-->
@@ -31,13 +31,13 @@
                 <a-menu-item key="files" @click="menuClick">
                   <a-icon :style="{fontSize: '30px'}" type="file" />
                 </a-menu-item>
-                <a-menu-item key="encode-decode" @click="menuClick">
+                <a-menu-item key="encode_decode" @click="menuClick">
                   <a-icon :style="{fontSize: '30px'}" type="barcode" />
                 </a-menu-item>
-                <a-menu-item key="search-replace" @click="menuClick">
+                <a-menu-item key="search_replace" @click="menuClick">
                   <a-icon :style="{fontSize: '30px'}" type="search" />
                 </a-menu-item>
-                <a-menu-item key="search+" @click="menuClick">
+                <a-menu-item key="search_plus" @click="menuClick">
                   <a-icon :style="{fontSize: '30px'}" type="file-search" />
                 </a-menu-item>
                 <a-menu-item key="frequency" @click="menuClick">
@@ -52,16 +52,15 @@
           <multipane class="major-panel" layout="vertical">
 <!--sidebar-->
             <div id="sidebar-container" class="pane" v-show="showing_sidebar !== null" :style="{ minWidth: '10%', width: '30%', maxWidth: '50%'}">
-              sidebar
+              <div v-show="showing_sidebar === 'files'"> <FileButtons></FileButtons> <a-divider /> <FileTree :shared-data="sharedData" :on-select="fileOnSelect"></FileTree> </div>
             </div>
-
             <multipane-resizer v-show="showing_sidebar !== null"></multipane-resizer>
 
 <!--editor-bar-->
             <div id="editor-container" class="pane" :style="{ flexGrow: 1 }">
               <div v-show="showing_editor_bar === 'dummy'">(dummy editor bar)</div>
-              <div v-show="showing_editor_bar === 'start'"> <StartPanel :start-edit="startEdit"></StartPanel> </div>
-              <div v-show="showing_editor_bar === 'editor'"> <Editor></Editor> </div>
+              <div v-show="showing_editor_bar === 'start'"> <StartPanel :start-edit="startEdit" :shared-data="sharedData"></StartPanel> </div>
+              <div v-show="showing_editor_bar === 'editor'"> <Editor ref="editor" :shared-data="sharedData"></Editor> </div>
             </div>
           </multipane>
         </a-layout-content>
