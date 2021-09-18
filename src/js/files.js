@@ -7,6 +7,7 @@ export class FileNode {
         this.magic_refresh = name;      // TODO: use vuex to remove magic sync
                                         // (invalid bind because of illegal way of sharing data)
         this.name = name;               // only write in constructor
+        this.key = name;
         this.parent = parent;           // root node: parent=null
         this.children = [];
         if(!(handler instanceof window.FileSystemHandle)) {
@@ -32,7 +33,6 @@ export class FileNode {
 
         // For the visualization
         this.title = name;
-        this.selectable = this.kind === 'file';
         this.slots = {
             icon: handler.kind,
         }
@@ -81,6 +81,7 @@ export class FileNode {
     // Update status cache (this.saved) and return
     Saved() {
         assert(this.kind === 'file', `calling function "Saved" on directory ${this}`);
+        // if(this.kind !== 'file') console.log(this);
         this.hash = hashCode(this.content);
         // this.saved only is written here
         this.saved = (this.hash === this.lastSavedHash);
@@ -139,6 +140,7 @@ export class FileTree {
             throw new Error("Root handler isn't directory");
         }
         this.root = new FileNode(rootHandler.name, null, rootHandler);
+        this.root.key = 'root';
     }
 
     async Scan() {

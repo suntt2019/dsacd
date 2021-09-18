@@ -5,8 +5,7 @@
     :tree-data = [sharedData.fileTree.root]
     :replace-fields="{
         title: 'name',
-        key: 'name',
-        selectable: 'selectable',
+        key: 'key',
       }"
     @select="onSelect"
     >
@@ -14,7 +13,7 @@
       <a-icon slot="file" type="file"/>
       <a-icon slot="file-unsaved" type="file" :style="{ color: 'var(--c-unsaved)' }"/>
       <a-icon slot="directory" type="folder" theme="filled"/>
-      <a-icon slot="directory-unsaved" type="folder" theme="filled" :style="{ color: '#08c' }"/>
+      <a-icon slot="directory-unsaved" type="folder" theme="filled" :style="{ color: 'var(--c-unsaved)' }"/>
     </a-tree>
   </div>
 </template>

@@ -3,11 +3,11 @@
     <a-layout>
 <!--header-->
       <a-layout-header id="header">
-        <a-tooltip placement="right" v-if="showing_editor_bar === 'editor'">
+        <a-tooltip placement="right" v-if="showing_editor_bar !== 'start'">
           <template slot="title">
             <span>Click here to reopen a folder.<br>(After saving the operating folder)</span>
           </template>
-          <a-icon id="reload-button" :style="{fontSize: '20px'}" type="folder-open" @click="reloadWorkspace"/>
+          <a-icon id="reload-button" :style="{fontSize: '20px'}" type="left-circle" @click="reloadWorkspace"/>
         </a-tooltip>
         <div id="header-title">
           <label>{{title}}</label>
@@ -18,7 +18,7 @@
         <a-layout-sider width = 64 >
           <div style="width: 64px">
             <a-tooltip placement="right">
-              <template slot="title" v-if="showing_editor_bar !== 'editor'">
+              <template slot="title" v-if="showing_editor_bar === 'start'">
                 <span>Sidebar is disabled <br> before opening folder.</span>
               </template>
               <a-menu id="menu"
@@ -51,16 +51,17 @@
         <a-layout-content>
           <multipane class="major-panel" layout="vertical">
 <!--sidebar-->
-            <div id="sidebar-container" class="pane" v-show="showing_sidebar !== null" :style="{ minWidth: '10%', width: '30%', maxWidth: '50%'}">
+            <div id="sidebar-container" class="pane" v-show="showing_sidebar !== null" :style="{ minWidth: '10%', width: '30%', maxWidth: '50%', overflow: 'auto'}">
               <div v-show="showing_sidebar === 'files'"> <FileButtons></FileButtons> <a-divider /> <FileTree :shared-data="sharedData" :on-select="fileOnSelect"></FileTree> </div>
             </div>
             <multipane-resizer v-show="showing_sidebar !== null"></multipane-resizer>
 
 <!--editor-bar-->
             <div id="editor-container" class="pane" :style="{ flexGrow: 1 }">
-              <div v-show="showing_editor_bar === 'dummy'">(dummy editor bar)</div>
+              <div v-show="showing_editor_bar === 'dummy'"> <DummyEditorBar></DummyEditorBar> </div>
               <div v-show="showing_editor_bar === 'start'"> <StartPanel :start-edit="startEdit" :shared-data="sharedData"></StartPanel> </div>
               <div v-show="showing_editor_bar === 'editor'"> <Editor ref="editor" :shared-data="sharedData"></Editor> </div>
+              <div v-show="showing_editor_bar === 'dirViewer'"> <DirViewer :selected="sharedData.selectedFile"></DirViewer> </div>
             </div>
           </multipane>
         </a-layout-content>

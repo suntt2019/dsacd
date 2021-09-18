@@ -3,6 +3,8 @@ import Editor from './components/Editor.vue';
 import StartPanel from "./components/StartPanel";
 import FileTree from "./components/FileTree";
 import FileButtons from './components/FileButtons';
+import DirViewer from './components/DirViewer';
+import DummyEditorBar from "./components/DummyEditorBar";
 import './style/App.css';
 
 export default {
@@ -54,8 +56,12 @@ export default {
                 },
                 selectedFile: {
                     content: 'Default file content',
-                    Saved() {}
+                    Saved() {},
+                    children: [],
                 },
+                t: {
+                    wbwb: 'wbbb'
+                }
             },
             title: 'DSACD',
         };
@@ -82,7 +88,7 @@ export default {
             }
         },
         menuClick(e) {
-            if(this.showing_editor_bar === 'editor') {
+            if(this.showing_editor_bar !== 'start') {
                 this.menuSwitch(e.key);
             }
         },
@@ -95,21 +101,38 @@ export default {
             this.showing_editor_bar = key;
         },
         startEdit() {
-            this.switchEditorBar("editor");
+            this.menuSwitch("files");
+            this.switchEditorBar("dummy");
         },
         reloadWorkspace() {
             this.switchEditorBar("start");
             this.menuClose();
         },
         fileOnSelect(key, e) {
-            this.$refs.editor.storeContent();
-            this.sharedData.selectedFile = e.node.dataRef;
-            // this.title = '(loading) ' + 'DSACD - ' + this.sharedData.selectedFile.name + ' (loading)';
-            this.sharedData.selectedFile.Load().then(()=>{
-                this.$forceUpdate()
-                this.$refs.editor.reloadContent();
-                this.title = 'DSACD - ' + this.sharedData.selectedFile.title;
-            })
+            // Store old file
+            if (this.sharedData.selectedFile.kind === 'file') {
+                this.$refs.editor.storeContent();
+                this.sharedData.selectedFile.Saved();
+            }
+
+            // Read new file
+            if (e.node.selected) {
+                this.title = 'DSACD';
+                this.switchEditorBar("dummy");
+            } else {
+                this.sharedData.selectedFile = e.node.dataRef;
+                if (e.node.dataRef.kind === 'file') {
+                    this.sharedData.selectedFile.Load().then(()=>{
+                        this.$refs.editor.reloadContent();
+                        this.title = 'DSACD - ' + this.sharedData.selectedFile.title;
+                        this.switchEditorBar("editor");
+                    })
+                } else {
+                    this.title = 'DSACD - ' + this.sharedData.selectedFile.title;
+                    this.switchEditorBar("dirViewer");
+                }
+            }
+            console.log(this.sharedData.selectedFile.children);
         },
     },
     components: {
@@ -119,5 +142,7 @@ export default {
         StartPanel,
         FileTree,
         FileButtons,
+        DirViewer,
+        DummyEditorBar
     },
 };
