@@ -1,10 +1,12 @@
 <template>
   <div id="editor">
-    <textarea id="editor-textarea" v-model="text"></textarea>
+    <a-textarea id="editor-textarea" v-model="text" @change="contentChange"></a-textarea>
   </div>
 </template>
 
 <script>
+import * as assert from "assert";
+
 export default {
   props: ['sharedData'],
   data() {
@@ -14,14 +16,29 @@ export default {
   },
   methods: {
     reloadContent() {
-      if(this.sharedData.selectedFile === null) {
-        throw(new Error('Try to reload content from null selected file'));
-      }
+      assert(this.sharedData.selectedFile !== null && this.sharedData.selectedFile.kind === 'file',
+        'reloading content from non-file target'
+      );
       this.text = this.sharedData.selectedFile.content;
     },
     storeContent() {
+      assert(this.sharedData.selectedFile !== null && this.sharedData.selectedFile.kind === 'file',
+          'storing content from non-file target'
+      );
       this.sharedData.selectedFile.content = this.text;
-    }
+    },
+    SyncSaved() {
+      if (this.sharedData.selectedFile === null || this.sharedData.selectedFile.kind !== 'file') {
+        return;
+      }
+      this.storeContent();
+      this.sharedData.selectedFile.Saved();
+    },
+    contentChange() {
+      if(this.sharedData.settings.liveSavedSync) {
+        this.SyncSaved();
+      }
+    },
   }
 }
 </script>

@@ -16,12 +16,11 @@ export default {
   props: ['showing', 'selected'],
   computed: {
     names: function () {
-      if(this.selected === undefined) {
+      if(this.selected === undefined || this.selected === null) {
         return;
       }
       let names = [];
       for(let c in this.selected.children) {
-        console.log(this.selected.children[c]);
         names.push(this.selected.children[c].name);
       }
       if(names.length > 5) {

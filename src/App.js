@@ -54,13 +54,14 @@ export default {
                         name: 'Empty tree',
                     }
                 },
-                selectedFile: {
-                    content: 'Default file content',
-                    Saved() {},
-                    children: [],
-                },
-                t: {
-                    wbwb: 'wbbb'
+                selectedFile: null,
+                // selectedFile: {
+                //     content: 'Default file content',
+                //     Saved() {},
+                //     children: [],
+                // },
+                settings: {
+                    liveSavedSync: true,
                 }
             },
             title: 'DSACD',
@@ -110,7 +111,7 @@ export default {
         },
         fileOnSelect(key, e) {
             // Store old file
-            if (this.sharedData.selectedFile.kind === 'file') {
+            if (this.sharedData.selectedFile !== null && this.sharedData.selectedFile.kind === 'file') {
                 this.$refs.editor.storeContent();
                 this.sharedData.selectedFile.Saved();
             }
@@ -132,8 +133,10 @@ export default {
                     this.switchEditorBar("dirViewer");
                 }
             }
-            console.log(this.sharedData.selectedFile.children);
         },
+        editorSyncSaved() {
+            this.$refs.editor.SyncSaved();
+        }
     },
     components: {
         Multipane,

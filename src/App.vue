@@ -52,7 +52,11 @@
           <multipane class="major-panel" layout="vertical">
 <!--sidebar-->
             <div id="sidebar-container" class="pane" v-show="showing_sidebar !== null" :style="{ minWidth: '10%', width: '30%', maxWidth: '50%', overflow: 'auto'}">
-              <div v-show="showing_sidebar === 'files'"> <FileButtons></FileButtons> <a-divider /> <FileTree :shared-data="sharedData" :on-select="fileOnSelect"></FileTree> </div>
+              <div v-show="showing_sidebar === 'files'">
+                <FileButtons :shared-data="sharedData" :editorSyncSaved="editorSyncSaved"></FileButtons>
+                <a-divider />
+                <FileTree :shared-data="sharedData" :on-select="fileOnSelect"></FileTree>
+              </div>
             </div>
             <multipane-resizer v-show="showing_sidebar !== null"></multipane-resizer>
 

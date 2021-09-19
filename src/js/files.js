@@ -1,13 +1,11 @@
 import { hashCode } from './hash';
 import * as assert from "assert";
-// import vue from 'vue';
 
 export class FileNode {
-    constructor(name, parent, handler) {
-        this.magic_refresh = name;      // TODO: use vuex to remove magic sync
+    constructor(name, parent, handler, content) {
+        this.magicRefresh = name;      // TODO: use vuex to remove magic refresh
                                         // (invalid bind because of illegal way of sharing data)
         this.name = name;               // only write in constructor
-        this.key = name;
         this.parent = parent;           // root node: parent=null
         this.children = [];
         if(!(handler instanceof window.FileSystemHandle)) {
@@ -15,8 +13,10 @@ export class FileNode {
         }
         this.handler = handler;         // only write in constructor
         this.kind = handler.kind;       // only write in constructor
+        this.key = this.kind + '/' + this.name;
         if (parent !== null) {
             parent.children.push(this);
+            this.parent.sortChildren();
         }
 
         // TODO: refactor to use inheritance
@@ -24,6 +24,10 @@ export class FileNode {
         // File only
         this.loaded = false;
         this.content = 'NOT_LOADED';
+        if(content !== undefined) {
+            this.content = content;
+            this.simpleSave(); // ignore return value here
+        }
         this.hash = hashCode(this.content);
         this.lastSavedHash = this.hash;
         this.saved = true;
@@ -56,6 +60,12 @@ export class FileNode {
         }
     }
 
+    sortChildren() {
+        this.children.sort((a, b) => {
+            return a.key.localeCompare(b.key);
+        })
+    }
+
     async Load() {
         assert(this.kind === 'file', `calling function "Load" on directory ${this}`);
         if(this.loaded) {
@@ -81,7 +91,6 @@ export class FileNode {
     // Update status cache (this.saved) and return
     Saved() {
         assert(this.kind === 'file', `calling function "Saved" on directory ${this}`);
-        // if(this.kind !== 'file') console.log(this);
         this.hash = hashCode(this.content);
         // this.saved only is written here
         this.saved = (this.hash === this.lastSavedHash);
@@ -92,11 +101,11 @@ export class FileNode {
         }
         if(this.saved) {
             this.slots.icon = 'file';
-            this.magic_refresh = 'saved';
+            this.magicRefresh = 'saved';
             // this.DARK_MAGIC = "DONT_REMOVE_OTHERWISE_CANT_WORK; TRUE_POWER!";
         } else {
             this.slots.icon = 'file-unsaved';
-            this.magic_refresh = 'unsaved';
+            this.magicRefresh = 'unsaved';
             // this.DARK_MAGIC = "DONT_REMOVE_OTHERWISE_CANT_WORK; TRUE_POWER!";
         }
         return this.saved;
@@ -111,10 +120,10 @@ export class FileNode {
         }
         if(this.unsavedChildren.size === 0) {
             this.slots.icon = 'directory';
-            this.magic_refresh = 'saved';
+            this.magicRefresh = 'saved';
         } else {
             this.slots.icon = 'directory-unsaved';
-            this.magic_refresh = 'unsaved';
+            this.magicRefresh = 'unsaved';
         }
         if(this.parent !== null) {
             this.parent.updateSavedChild(name, saved);
@@ -123,14 +132,15 @@ export class FileNode {
 
     async Save() {
         assert(this.kind === 'file', `calling function "Save" on directory ${this}`);
-        if(this.kind !== 'file' && !this.Saved()) {
-            return;
-        }
-        let file = await this.handler.createWritable(true);
-        await file.write(this.content);
-        await file.close();
+        await this.simpleSave();
         this.lastSavedHash = hashCode(this.content);
         this.Saved();
+    }
+
+    async simpleSave() {
+        let file = await this.handler.createWritable({keepExistingData: true});
+        await file.write(this.content);
+        await file.close();
     }
 }
 
@@ -146,6 +156,14 @@ export class FileTree {
     async Scan() {
         await this.root.PreorderTraversal( async function (n) {
             await n.ScanChildren();
+        })
+    }
+
+    async SaveAll() {
+        await this.root.PreorderTraversal( async function (n) {
+            if(!n.saved) {
+                await n.Save();
+            }
         })
     }
 
