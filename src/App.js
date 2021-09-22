@@ -5,6 +5,7 @@ import FileTree from "./components/FileTree";
 import FileButtons from './components/FileButtons';
 import DirViewer from './components/DirViewer';
 import DummyEditorBar from "./components/DummyEditorBar";
+import EncodingPanel from "./components/EncodingPanel";
 import './style/App.css';
 
 export default {
@@ -65,6 +66,7 @@ export default {
                 }
             },
             title: 'DSACD',
+            showUnsavedConfirm: false,
         };
     },
     methods: {
@@ -136,6 +138,21 @@ export default {
         },
         editorSyncSaved() {
             this.$refs.editor.SyncSaved();
+        },
+        editorGetSelected() {
+            return this.$refs.editor.GetSelected();
+        },
+        editorSetSelected(str) {
+            return this.$refs.editor.SetSelected(str);
+        },
+        checkReopen() {
+            this.editorSyncSaved();
+            // this.sharedData.fileTree.SavedAll();
+            if(this.sharedData.fileTree.root.unsavedChildren.size !== 0) {
+                this.showUnsavedConfirm = true;
+            } else {
+                this.reloadWorkspace();
+            }
         }
     },
     components: {
@@ -146,6 +163,7 @@ export default {
         FileTree,
         FileButtons,
         DirViewer,
-        DummyEditorBar
+        DummyEditorBar,
+        EncodingPanel
     },
 };

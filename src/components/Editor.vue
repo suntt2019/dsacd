@@ -1,6 +1,6 @@
 <template>
   <div id="editor">
-    <a-textarea id="editor-textarea" v-model="text" @change="contentChange"></a-textarea>
+    <textarea id="editor-textarea" v-model="text" @change="contentChange" @click="updateSelection"></textarea>
   </div>
 </template>
 
@@ -12,6 +12,7 @@ export default {
   data() {
     return {
       text: 'initial text',
+      lastSelection: [0,0],
     }
   },
   methods: {
@@ -39,6 +40,27 @@ export default {
         this.SyncSaved();
       }
     },
+    GetSelected() {
+      return this.text.substring(this.lastSelection[0], this.lastSelection[1]);
+    },
+    SetSelected(str) {
+      this.updateSelection();
+      this.text = this.text.substring(0, this.lastSelection[0])
+          + str
+          + this.text.substring(this.lastSelection[1]);
+      setTimeout(()=>{
+        this.setLastSelected(this.lastSelection[0], this.lastSelection[0] + str.length);
+      }, 1);
+    },
+    setLastSelected(start, end) {
+      let textarea = document.getElementById("editor-textarea");
+      textarea.focus();
+      textarea.setSelectionRange(start, end);
+    },
+    updateSelection() {
+      let textarea = document.getElementById("editor-textarea");
+      this.lastSelection = [textarea.selectionStart, textarea.selectionEnd];
+    }
   }
 }
 </script>
@@ -50,5 +72,6 @@ export default {
   background: var(--editor-bar-background);
   border: none;
   padding: 5px 10px;
+  font-family: monospace;
 }
 </style>

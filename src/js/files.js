@@ -138,7 +138,7 @@ export class FileNode {
     }
 
     async simpleSave() {
-        let file = await this.handler.createWritable({keepExistingData: true});
+        let file = await this.handler.createWritable({keepExistingData: false});
         await file.write(this.content);
         await file.close();
     }
@@ -161,8 +161,16 @@ export class FileTree {
 
     async SaveAll() {
         await this.root.PreorderTraversal( async function (n) {
-            if(!n.saved) {
+            if(n.kind === 'file' && !n.saved) {
                 await n.Save();
+            }
+        })
+    }
+
+    async SavedAll() {
+        await this.root.PreorderTraversal( async function (n) {
+            if(n.kind === 'file') {
+                n.Saved();
             }
         })
     }

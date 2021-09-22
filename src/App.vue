@@ -7,7 +7,24 @@
           <template slot="title">
             <span>Click here to reopen a folder.<br>(After saving the operating folder)</span>
           </template>
-          <a-icon id="reload-button" :style="{fontSize: '20px'}" type="left-circle" @click="reloadWorkspace"/>
+          <a-icon id="reload-button" :style="{fontSize: '20px'}" type="left-circle" @click="checkReopen"/>
+          <a-modal
+            v-model="showUnsavedConfirm"
+            title="Abort unsaved Changes?"
+          >
+            There are some unsaved changes, are you sure you want to reopen another folder without saving them?
+            <template slot="footer">
+              <a-button key="save" @click="()=>{this.$refs.fileButtons.saveFiles(); reloadWorkspace();this.showUnsavedConfirm = false;}">
+                Save all
+              </a-button>
+              <a-button key="notSave" @click="()=>{reloadWorkspace();this.showUnsavedConfirm = false;}">
+                Don't save
+              </a-button>
+              <a-button key="cancel" @click="()=>{this.showUnsavedConfirm = false;}">
+                Cancel
+              </a-button>
+            </template>
+          </a-modal>
         </a-tooltip>
         <div id="header-title">
           <label>{{title}}</label>
@@ -19,7 +36,7 @@
           <div style="width: 64px">
             <a-tooltip placement="right">
               <template slot="title" v-if="showing_editor_bar === 'start'">
-                <span>Sidebar is disabled <br> before opening folder.</span>
+                <span>Sidebar is disabled <br> please open a folder first.</span>
               </template>
               <a-menu id="menu"
                   :default-selected-keys="[]"
@@ -53,9 +70,12 @@
 <!--sidebar-->
             <div id="sidebar-container" class="pane" v-show="showing_sidebar !== null" :style="{ minWidth: '10%', width: '30%', maxWidth: '50%', overflow: 'auto'}">
               <div v-show="showing_sidebar === 'files'">
-                <FileButtons :shared-data="sharedData" :editorSyncSaved="editorSyncSaved"></FileButtons>
+                <FileButtons ref="fileButtons" :shared-data="sharedData" :editorSyncSaved="editorSyncSaved"></FileButtons>
                 <a-divider />
                 <FileTree :shared-data="sharedData" :on-select="fileOnSelect"></FileTree>
+              </div>
+              <div v-show="showing_sidebar === 'encode_decode'">
+                <EncodingPanel :get-selected="editorGetSelected" :set-selected="editorSetSelected"></EncodingPanel>
               </div>
             </div>
             <multipane-resizer v-show="showing_sidebar !== null"></multipane-resizer>
