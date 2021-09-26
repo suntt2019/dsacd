@@ -170,6 +170,7 @@ textarea {
   background: var(--editor-bar-background) !important;
   border: none;
   padding: 5px 10px;
+  margin: 0 !important;
 }
 .ant-message-notice-content {
   background-color: var(--c-common-background) !important;

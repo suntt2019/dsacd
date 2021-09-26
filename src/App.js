@@ -6,6 +6,7 @@ import FileButtons from './components/FileButtons';
 import DirViewer from './components/DirViewer';
 import DummyEditorBar from "./components/DummyEditorBar";
 import EncodingPanel from "./components/EncodingPanel";
+import FindAndReplace from "./components/FindAndReplace";
 import './style/App.css';
 
 export default {
@@ -114,7 +115,7 @@ export default {
         fileOnSelect(key, e) {
             // Store old file
             if (this.sharedData.selectedFile !== null && this.sharedData.selectedFile.kind === 'file') {
-                this.$refs.editor.storeContent();
+                this.$refs.editor.StoreContent();
                 this.sharedData.selectedFile.Saved();
             }
 
@@ -145,6 +146,18 @@ export default {
         editorSetSelected(str) {
             return this.$refs.editor.SetSelected(str);
         },
+        editorStoreContent() {
+            return this.$refs.editor.StoreContent();
+        },
+        editorReloadContent() {
+            return this.$refs.editor.reloadContent();
+        },
+        editorSetLastSelected(start, end) {
+            return this.$refs.editor.SetLastSelected(start, end);
+        },
+        editorTextChange() {
+            this.$refs.findAndReplace.ReplaceNeedRefresh();
+        },
         checkReopen() {
             this.editorSyncSaved();
             // this.sharedData.fileTree.SavedAll();
@@ -164,6 +177,7 @@ export default {
         FileButtons,
         DirViewer,
         DummyEditorBar,
-        EncodingPanel
+        EncodingPanel,
+        FindAndReplace
     },
 };

@@ -8,7 +8,7 @@
 import * as assert from "assert";
 
 export default {
-  props: ['sharedData'],
+  props: ['sharedData', 'textChange'],
   data() {
     return {
       text: 'initial text',
@@ -22,7 +22,7 @@ export default {
       );
       this.text = this.sharedData.selectedFile.content;
     },
-    storeContent() {
+    StoreContent() {
       assert(this.sharedData.selectedFile !== null && this.sharedData.selectedFile.kind === 'file',
           'storing content from non-file target'
       );
@@ -32,13 +32,14 @@ export default {
       if (this.sharedData.selectedFile === null || this.sharedData.selectedFile.kind !== 'file') {
         return;
       }
-      this.storeContent();
+      this.StoreContent();
       this.sharedData.selectedFile.Saved();
     },
     contentChange() {
       if(this.sharedData.settings.liveSavedSync) {
         this.SyncSaved();
       }
+      this.textChange();
     },
     GetSelected() {
       return this.text.substring(this.lastSelection[0], this.lastSelection[1]);
@@ -49,10 +50,11 @@ export default {
           + str
           + this.text.substring(this.lastSelection[1]);
       setTimeout(()=>{
-        this.setLastSelected(this.lastSelection[0], this.lastSelection[0] + str.length);
+        this.SetLastSelected(this.lastSelection[0], this.lastSelection[0] + str.length);
       }, 1);
     },
-    setLastSelected(start, end) {
+    SetLastSelected(start, end) {
+      // console.log('set last selected:', start, end);
       let textarea = document.getElementById("editor-textarea");
       textarea.focus();
       textarea.setSelectionRange(start, end);
@@ -72,6 +74,11 @@ export default {
   background: var(--editor-bar-background);
   border: none;
   padding: 5px 10px;
-  font-family: monospace;
+  font-family: "Microsoft Yahei",sans-serif;
+  font-size: 18px;
+}
+::selection {
+  color: var(--c-selected-text);
+  background: var(--c-selected-text-background);
 }
 </style>

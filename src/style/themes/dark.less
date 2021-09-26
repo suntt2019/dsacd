@@ -5,13 +5,21 @@
 // background
 @c-selected-background: #777;
 @c-button-background: #585858;
-@c-top-bottom-background: #444;
+@c-item-background: #444;
 @c-menu-background: #333;
 @c-common-background: #252525;
 @c-text-area-background: #1e1e1e;
 
+// found
+@c-found-text: #000;
+@c-found-background: #ca0;
+
 // text & border
-@c-text: #fff;
+@c-text: #ddd;
+@c-selected-text: #fff;
+@c-selected-text-background: #58fa;
+@c-removed-text-background: #e77;
+@c-added-text-background: #7e7;
 @c-border: #000;
 
 //
@@ -20,7 +28,7 @@
 @c-unsaved: #7AF;
 
 // header
-@header-background: @c-top-bottom-background;
+@header-background: @c-item-background;
 
 // menu
 @menu-background: @c-menu-background;
@@ -33,7 +41,7 @@
 @editor-bar-background: @c-text-area-background;
 
 // footer
-@footer-background: @c-top-bottom-background;
+@footer-background: @c-item-background;
 
 // Colors defined by ant-design-vue
 @import '../../../node_modules/ant-design-vue/dist/antd.less'; // 引入官方提供的 less 样式入口文件
@@ -59,14 +67,22 @@
 :root{
   // background
   --c-selected-background: @c-selected-background;
-  --c-top-bottom-background: @c-top-bottom-background;
+  --c-item-background: @c-item-background;
   --c-menu-background: @c-menu-background;
   --c-common-background: @c-common-background;
   --c-text-area-background: @c-text-area-background;
   --c-button-background: @c-button-background;
 
+  // found
+  --c-found-text: @c-found-text;
+  --c-found-background: @c-found-background;
+
   // text & border
   --c-text: @c-text;
+  --c-selected-text: @c-selected-text;
+  --c-selected-text-background: @c-selected-text-background;
+  --c-removed-text-background: @c-removed-text-background;
+  --c-added-text-background: @c-added-text-background;
   --c-border: @c-border;
 
   //

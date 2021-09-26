@@ -77,6 +77,9 @@
               <div v-show="showing_sidebar === 'encode_decode'">
                 <EncodingPanel :get-selected="editorGetSelected" :set-selected="editorSetSelected"></EncodingPanel>
               </div>
+              <div v-show="showing_sidebar === 'search_replace'">
+                <FindAndReplace ref="findAndReplace" :shared-data="sharedData" :store-content="editorStoreContent" :reload-content="editorReloadContent" :set-last-selected="editorSetLastSelected"></FindAndReplace>
+              </div>
             </div>
             <multipane-resizer v-show="showing_sidebar !== null"></multipane-resizer>
 
@@ -84,7 +87,7 @@
             <div id="editor-container" class="pane" :style="{ flexGrow: 1 }">
               <div v-show="showing_editor_bar === 'dummy'"> <DummyEditorBar></DummyEditorBar> </div>
               <div v-show="showing_editor_bar === 'start'"> <StartPanel :start-edit="startEdit" :shared-data="sharedData"></StartPanel> </div>
-              <div v-show="showing_editor_bar === 'editor'"> <Editor ref="editor" :shared-data="sharedData"></Editor> </div>
+              <div v-show="showing_editor_bar === 'editor'"> <Editor ref="editor" :shared-data="sharedData" :text-change="editorTextChange"></Editor> </div>
               <div v-show="showing_editor_bar === 'dirViewer'"> <DirViewer :selected="sharedData.selectedFile"></DirViewer> </div>
             </div>
           </multipane>

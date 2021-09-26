@@ -178,35 +178,6 @@ class HuffmanTree {
             ret.nodes.push(n);
         });
         return ret;
-        // return this.root.PostorderTraversal((node, childrenReturnValue) => {
-        //     let ret = {
-        //         nodes: [],
-        //         edges: [],
-        //     }
-        //     // console.log(childrenReturnValue);
-        //     for (let i in childrenReturnValue) {
-        //         ret.nodes = ret.nodes.concat(childrenReturnValue[i].nodes);
-        //         ret.edges = ret.edges.concat(childrenReturnValue[i].edges);
-        //     }
-        //     let numInFloor = 0, name = 'root';
-        //     if(node.code !== '') {
-        //         numInFloor = parseInt(node.code, 2);
-        //         name = node.code;
-        //     }
-        //     for(let i in node.children) {
-        //         ret.edges.push({
-        //             source: name,
-        //             target: node.children[i].code
-        //         })
-        //     }
-        //     ret.nodes.push({
-        //         id: name,
-        //         label: node.name(),
-        //         x: xSpace * Math.pow(2, (floorCount-node.code.length)) * (numInFloor + 0.5),
-        //         y: ySpace * node.code.length,
-        //     });
-        //     return ret;
-        // });
     }
 
 }
