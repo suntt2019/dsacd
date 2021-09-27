@@ -168,8 +168,8 @@ export default {
 textarea {
   width: 100%;
   background: var(--editor-bar-background) !important;
-  border: none;
-  padding: 5px 10px;
+  border: none !important;
+  padding: 5px 10px !important;
   margin: 0 !important;
 }
 .ant-message-notice-content {

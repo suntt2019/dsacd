@@ -250,8 +250,11 @@ export default {
       this.sharedData.selectedFile.content = this.replace.replacer.str;
       this.reloadContent();
       this.replace.points = this.replace.replacer.GetPoints();
+      if(this.replace.points.length === 0) {
+        this.ReplaceNeedRefresh();
+      }
       this.replace.selected = this.replaceFindSelected(this.replace.replacer.nextReplace);
-      this.replaceHighLight();
+      setTimeout(()=>{this.replaceHighLight();}, 1);
     },
     replaceFindSelected(nextPlace) {
       for(let i in this.replace.points) {
@@ -265,6 +268,9 @@ export default {
       this.sharedData.selectedFile.content = this.replace.replacer.str;
       this.reloadContent();
       this.replace.points = this.replace.replacer.GetPoints();
+      if(this.replace.points.length === 0) {
+        this.ReplaceNeedRefresh();
+      }
       this.replace.selected = 0;
     }
   }
