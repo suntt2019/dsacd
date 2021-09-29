@@ -61,6 +61,48 @@ export function FindAll(str, target) {
     return prefixArrayToPoints(findAll(str, target), target.length);
 }
 
+/**
+ @param {string} str
+ @param {string} separator
+ @return {Number[][]}
+ */
+function split(str, separator) {
+    let prefixArray = findAll(str, separator);
+    let ret = [], points = [];
+    let start = 0;
+    for (let i = 0; i < prefixArray.length; i++) {
+        if (prefixArray[i] === separator.length) {
+            ret.push(str.substring(start, i - separator.length + 1));
+            points.push(start);
+            start = i + 1;
+        }
+    }
+    ret.push(str.substring(start));
+    return [ret, points];
+}
+
+/**
+ @param {string} str
+ @param {string} separator
+ @return {Number[]}
+ */
+export function Split(str, separator) {
+    assert(typeof str === 'string', "Input str of Split is not a string");
+    assert(typeof separator === 'string', "Input separator of Split is not a string");
+    return split(str, separator)[0];
+}
+
+/**
+ @param {string} str
+ @param {string} separator
+ @return {Number[][]}
+ */
+export function SplitWithPoints(str, separator) {
+    assert(typeof str === 'string', "Input str of Split is not a string");
+    assert(typeof separator === 'string', "Input separator of Split is not a string");
+    return split(str, separator);
+}
+
 export class Replacer {
     /**
      * @param {string} str
@@ -92,7 +134,7 @@ export class Replacer {
     }
 
     Replace() {
-        if(this.nextReplace < 0) {
+        if (this.nextReplace < 0) {
             return null;
         }
         this.str = this.str.substring(0, this.nextReplace)
