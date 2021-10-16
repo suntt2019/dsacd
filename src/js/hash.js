@@ -1,4 +1,5 @@
 import * as assert from "assert";
+import {HeapSort} from "./heap";
 
 // Reference: https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
 export const hashCode = s => s.split('').reduce((a, b) => {
@@ -140,7 +141,7 @@ export class HashTable {
      */
     getD(d0, i, key) {
         let ret = ((d0 + this.p(key, i)) % this.capacity + this.capacity) % this.capacity;
-        console.log('getD:', d0, i, key, ret);
+        // console.log('getD:', d0, i, key, ret);
         return ret;
     }
 
@@ -193,7 +194,23 @@ export class HashSet {
     }
 }
 
-// TODO: test this
+/**
+ * Convert a string list to set.
+ * @param {String[]} list
+ * @param {Number} capacity
+ * @return {HashSet}
+ */
+export function ListToSet(list, capacity = -1) {
+    if(capacity === -1) {
+        capacity = list.length;
+    }
+    let ret = new HashSet(capacity);
+    for(let i in list) {
+        ret.Add(list[i]);
+    }
+    return ret;
+}
+
 export class HashMap {
     constructor(capacity, p = HashTable.pLinerDetection, maxTryTimes = (c) => {
         return c
@@ -218,6 +235,10 @@ export class HashMap {
         return this.array[getRet];
     }
 
+    Remove(key) {
+        this.hashTable.Remove(key);
+    }
+
     Has(key) {
         let getRet = this.hashTable.Get(key);
         return getRet !== null;
@@ -225,5 +246,23 @@ export class HashMap {
 
     Keys() {
         return this.hashTable.Items();
+    }
+
+    Items() {
+        let ret = [];
+        for (let i = 0; i < this.hashTable.capacity; i++) {
+            if(this.hashTable.array[i] === undefined || this.hashTable.array[i].tomb === true) {
+                continue;
+            }
+            ret.push({
+                key: this.hashTable.array[i],
+                value: this.array[i],
+            });
+        }
+        return ret;
+    }
+
+    SortedItems(greater) {
+        return HeapSort(this.Items(), greater);
     }
 }

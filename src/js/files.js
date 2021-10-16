@@ -1,14 +1,16 @@
-import { hashCode } from './hash';
 import * as assert from "assert";
+import {hashCode} from './hash';
+import {FileIndex} from './invertedIndex';
 
 export class FileNode {
-    constructor(name, parent, handler, content) {
+    // content is an optional parameter
+    constructor(name, parent, handler, workspace, content) {
         this.magicRefresh = name;      // TODO: use vuex to remove magic refresh
-                                        // (invalid bind because of illegal way of sharing data)
+        // (invalid bind because of illegal way of sharing data)
         this.name = name;               // only write in constructor
         this.parent = parent;           // root node: parent=null
         this.children = [];
-        if(!(handler instanceof window.FileSystemHandle)) {
+        if (!(handler instanceof window.FileSystemHandle)) {
             throw(new Error(`Invalid handler for constructing FileNode ${handler}`));
         }
         this.handler = handler;         // only write in constructor
@@ -24,13 +26,17 @@ export class FileNode {
         // File only
         this.loaded = false;
         this.content = 'NOT_LOADED';
-        if(content !== undefined) {
+        if (content !== undefined) {
             this.content = content;
             this.simpleSave(); // ignore return value here
         }
         this.hash = hashCode(this.content);
         this.lastSavedHash = this.hash;
         this.saved = true;
+        if (this.kind === 'file') {
+            this.index = new FileIndex('', this, workspace);
+        }
+        this.workspace = workspace;
 
         // Directory only
         this.unsavedChildren = new Set();
@@ -56,7 +62,7 @@ export class FileNode {
             return;
         }
         for await (const [k, v] of this.handler.entries()) {
-            new FileNode(k, this, v);
+            new FileNode(k, this, v, this.workspace);
         }
     }
 
@@ -68,7 +74,7 @@ export class FileNode {
 
     async Load() {
         assert(this.kind === 'file', `calling function "Load" on directory ${this}`);
-        if(this.loaded) {
+        if (this.loaded) {
             return;
         }
         await this.load();
@@ -82,59 +88,66 @@ export class FileNode {
 
     async load() {
         assert(this.kind === 'file', `calling function "load" on directory ${this}`);
+        this.workspace.message.loading({content:`Loading file ${this.name}...`, key:'load'});
         let file = await this.handler.getFile();
         this.content = await file.text();
         this.lastSavedHash = hashCode(this.content);
         this.Saved();
+        this.workspace.message.success({content:`Finish loading file ${this.name}`, key:'load', duration: 2});
     }
 
     // Update status cache (this.saved) and return
     Saved() {
         assert(this.kind === 'file', `calling function "Saved" on directory ${this}`);
         this.hash = hashCode(this.content);
+
+        // console.log(this.hash, this.index.hash, this.hash === this.index.hash);
+        if (this.hash !== this.index.hash) {
+            this.updateIndex();
+        }
         // this.saved only is written here
         this.saved = (this.hash === this.lastSavedHash);
 
         // Modifications when this.saved changes
-        if(this.parent !== null) {
+        if (this.parent !== null) {
             this.parent.updateSavedChild(this.name, this.saved);
         }
-        if(this.saved) {
+        if (this.saved) {
             this.slots.icon = 'file';
             this.magicRefresh = 'saved';
-            // this.DARK_MAGIC = "DONT_REMOVE_OTHERWISE_CANT_WORK; TRUE_POWER!";
         } else {
             this.slots.icon = 'file-unsaved';
             this.magicRefresh = 'unsaved';
-            // this.DARK_MAGIC = "DONT_REMOVE_OTHERWISE_CANT_WORK; TRUE_POWER!";
         }
         return this.saved;
     }
 
     updateSavedChild(name, saved) {
         assert(this.kind === 'directory', `calling function "updateSavedChild" on file ${this}`);
-        if(saved) {
+        if (saved) {
             this.unsavedChildren.delete(name);
         } else {
             this.unsavedChildren.add(name);
         }
-        if(this.unsavedChildren.size === 0) {
+        if (this.unsavedChildren.size === 0) {
             this.slots.icon = 'directory';
             this.magicRefresh = 'saved';
         } else {
             this.slots.icon = 'directory-unsaved';
             this.magicRefresh = 'unsaved';
         }
-        if(this.parent !== null) {
+        if (this.parent !== null) {
             this.parent.updateSavedChild(name, saved);
         }
     }
 
     async Save() {
         assert(this.kind === 'file', `calling function "Save" on directory ${this}`);
+        this.workspace.message.loading({content:`Saving file ${this.name}...`, key:'save'});
         await this.simpleSave();
         this.lastSavedHash = hashCode(this.content);
         this.Saved();
+        this.workspace.message.success({content:`Finish saving file ${this.name}`, key:'save', duration: 2});
     }
 
     async simpleSave() {
@@ -142,34 +155,51 @@ export class FileNode {
         await file.write(this.content);
         await file.close();
     }
+
+    updateIndex() {
+        this.workspace.message.loading({content:`Indexing file ${this.name}...`, key:'index'});
+        if (this.index.hash !== 0) {
+            this.workspace.Sub(this.index);
+        }
+        this.index = new FileIndex(this.content, this, this.index.workspace);
+        this.workspace.message.success({content:`Finish indexing file ${this.name}`, key:'index', duration: 2});
+    }
 }
 
 export class FileTree {
-    constructor(rootHandler) {
+    constructor(rootHandler, workspace) {
         if (rootHandler.kind !== 'directory') {
             throw new Error("Root handler isn't directory");
         }
-        this.root = new FileNode(rootHandler.name, null, rootHandler);
+        this.root = new FileNode(rootHandler.name, null, rootHandler, workspace);
         this.root.key = 'root';
     }
 
     async Scan() {
-        await this.root.PreorderTraversal( async function (n) {
+        await this.root.PreorderTraversal(async function (n) {
             await n.ScanChildren();
         })
     }
 
     async SaveAll() {
-        await this.root.PreorderTraversal( async function (n) {
-            if(n.kind === 'file' && !n.saved) {
+        await this.root.PreorderTraversal(async function (n) {
+            if (n.kind === 'file' && !n.saved) {
                 await n.Save();
             }
         })
     }
 
+    async LoadAll() {
+        await this.root.PreorderTraversal(async function (n) {
+            if (n.kind === 'file') {
+                await n.Load();
+            }
+        })
+    }
+
     async SavedAll() {
-        await this.root.PreorderTraversal( async function (n) {
-            if(n.kind === 'file') {
+        await this.root.PreorderTraversal(async function (n) {
+            if (n.kind === 'file') {
                 n.Saved();
             }
         })
@@ -178,7 +208,7 @@ export class FileTree {
 }
 
 export function GetDir(after) {
-    window.showDirectoryPicker().then((dir)=>{
+    window.showDirectoryPicker().then((dir) => {
         after(dir);
     });
 }
@@ -186,6 +216,5 @@ export function GetDir(after) {
 export default {
     FileNode,
     FileTree,
-    methods: {
-    }
+    methods: {}
 };

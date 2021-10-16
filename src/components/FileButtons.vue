@@ -7,7 +7,8 @@
 <!--      Improvement: set the button gray when "this.sharedData.selectedFile!==null && this.sharedData.selectedFile.kind === 'file' && !this.sharedData.selectedFile.saved"-->
       <a-icon type="appstore" :style="{ fontSize: '24px' }" @click="saveFiles"/>
 <!--      Improvement: set the button gray when "this.sharedData.fileTree.root.unsavedChildren.size !== 0"-->
-      <a-icon type="sync" v-show="!sharedData.settings.liveSavedSync" :style="{ fontSize: '24px' }" @click="syncFilesSaved"/>
+      <a-icon type="sync" v-if="!sharedData.settings.liveSavedSync" :style="{ fontSize: '24px' }" @click="syncFilesSaved"/>
+      <a-icon type="database" :style="{ fontSize: '24px' }" @click="LoadFiles"/>
     </a-space>
     <a-modal v-model="showInputModal" title="New file" @ok="nameInputOK">
       <a-input id="name-input" v-model="nameInput" allow-clear placeholder="New file name" />
@@ -44,7 +45,7 @@ export default {
     },
     async createFile(dir, name, content) {
       let handler = await dir.handler.getFileHandle(name, {create: true});
-      return new FileNode(name, dir, handler, content);
+      return new FileNode(name, dir, handler, content, this.sharedData.index);
     },
     validName(dir, name) {
       for (let i in dir.children) {
@@ -97,6 +98,9 @@ export default {
     syncFilesSaved() {
       this.editorSyncSaved();
     },
+    LoadFiles() {
+      this.sharedData.fileTree.LoadAll();
+    }
 
   }
 }

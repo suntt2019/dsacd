@@ -7,7 +7,7 @@
         title: 'name',
         key: 'key',
       }"
-    @select="onSelect"
+    @select="fileOnSelect"
     >
       <a-icon slot="switcherIcon" type="down"/>
       <a-icon slot="file" type="file"/>
@@ -21,7 +21,12 @@
 <script>
 export default {
   name: "FileTree",
-  props: ['sharedData', 'onSelect'],
+  props: ['sharedData', 'checkoutFile'],
+  methods: {
+    fileOnSelect(key, e) {
+      this.checkoutFile(e.node.selected, e.node.dataRef);
+    },
+  }
 };
 </script>
 

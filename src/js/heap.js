@@ -76,3 +76,12 @@ export class Heap {
         this.ShiftUp(this.size-1);
     }
 }
+
+export function HeapSort(items, greater) {
+    let heap = new Heap(items, greater);
+    let ret = [];
+    for(let i=0;i<items.length;i++) {
+        ret.push(heap.Pop());
+    }
+    return ret;
+}

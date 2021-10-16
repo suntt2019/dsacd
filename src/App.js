@@ -7,6 +7,7 @@ import DirViewer from './components/DirViewer';
 import DummyEditorBar from "./components/DummyEditorBar";
 import EncodingPanel from "./components/EncodingPanel";
 import FindAndReplace from "./components/FindAndReplace";
+import Frequency from "./components/Frequency";
 import './style/App.css';
 
 export default {
@@ -64,7 +65,8 @@ export default {
                 // },
                 settings: {
                     liveSavedSync: true,
-                }
+                },
+                index: undefined,
             },
             title: 'DSACD',
             showUnsavedConfirm: false,
@@ -83,6 +85,10 @@ export default {
                 sidebar_container.style.minWidth = this.sidebars[key].min_width;
                 sidebar_container.style.maxWidth = this.sidebars[key].max_width;
                 this.showing_sidebar = key;
+                if(key === 'frequency' || key === 'search_plus') {
+                    this.sharedData.fileTree.LoadAll().then();
+                }
+
             }
             // update menu_keys to consist with showing_sidebar
             if(this.showing_sidebar === null) {
@@ -112,20 +118,19 @@ export default {
             this.switchEditorBar("start");
             this.menuClose();
         },
-        fileOnSelect(key, e) {
+        checkoutFile(selected, fileNode) {
             // Store old file
             if (this.sharedData.selectedFile !== null && this.sharedData.selectedFile.kind === 'file') {
                 this.$refs.editor.StoreContent();
                 this.sharedData.selectedFile.Saved();
             }
-
             // Read new file
-            if (e.node.selected) {
+            if (selected) {
                 this.title = 'DSACD';
                 this.switchEditorBar("dummy");
             } else {
-                this.sharedData.selectedFile = e.node.dataRef;
-                if (e.node.dataRef.kind === 'file') {
+                this.sharedData.selectedFile = fileNode;
+                if (fileNode.kind === 'file') {
                     this.sharedData.selectedFile.Load().then(()=>{
                         this.$refs.editor.reloadContent();
                         this.title = 'DSACD - ' + this.sharedData.selectedFile.title;
@@ -178,6 +183,7 @@ export default {
         DirViewer,
         DummyEditorBar,
         EncodingPanel,
-        FindAndReplace
+        FindAndReplace,
+        Frequency
     },
 };

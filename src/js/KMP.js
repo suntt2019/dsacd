@@ -122,7 +122,7 @@ export class Replacer {
 
     find() {
         this.prefixArray = findAll(this.str, this.source);
-        console.log('prefixArray:', this.prefixArray);
+        // console.log('prefixArray:', this.prefixArray);
         this.nextReplace = -1;
         for (let i = 0; i <= this.prefixArray.length + this.lastReplaced; i++) {
             let ii = i % this.prefixArray.length;

@@ -72,13 +72,16 @@
               <div v-show="showing_sidebar === 'files'">
                 <FileButtons ref="fileButtons" :shared-data="sharedData" :editorSyncSaved="editorSyncSaved"></FileButtons>
                 <a-divider />
-                <FileTree :shared-data="sharedData" :on-select="fileOnSelect"></FileTree>
+                <FileTree :shared-data="sharedData" :checkout-file="checkoutFile"></FileTree>
               </div>
               <div v-show="showing_sidebar === 'encode_decode'">
                 <EncodingPanel :get-selected="editorGetSelected" :set-selected="editorSetSelected"></EncodingPanel>
               </div>
               <div v-show="showing_sidebar === 'search_replace'">
                 <FindAndReplace ref="findAndReplace" :shared-data="sharedData" :store-content="editorStoreContent" :reload-content="editorReloadContent" :set-last-selected="editorSetLastSelected"></FindAndReplace>
+              </div>
+              <div v-show="showing_sidebar === 'frequency'">
+                <Frequency :shared-data="sharedData" :set-last-selected="editorSetLastSelected" :checkout-file="checkoutFile"></Frequency>
               </div>
             </div>
             <multipane-resizer v-show="showing_sidebar !== null"></multipane-resizer>

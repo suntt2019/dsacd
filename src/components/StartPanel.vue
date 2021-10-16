@@ -31,21 +31,25 @@
 
 <script>
 import {GetDir, FileTree} from "../js/files";
+import {WorkspaceIndex} from "../js/invertedIndex";
 
 export default {
   name: 'StartPanel',
   props: ['startEdit', 'sharedData'],
   methods: {
     importFolder(){
+      this.sharedData.index = new WorkspaceIndex(this.$message);
       GetDir((dir)=>{
-        this.sharedData.fileTree = new FileTree(dir);
-        this.sharedData.fileTree.Scan();
-        this.startEdit();
+        this.sharedData.fileTree = new FileTree(dir, this.sharedData.index);
+        this.sharedData.fileTree.Scan().then(()=>{
+          this.startEdit();
+        });
       });
     },
     openFolder(){
+      this.sharedData.index = new WorkspaceIndex(this.$message);
       GetDir((dir)=>{
-        this.sharedData.fileTree = new FileTree(dir);
+        this.sharedData.fileTree = new FileTree(dir, this.sharedData.index);
         this.startEdit();
       });
     },

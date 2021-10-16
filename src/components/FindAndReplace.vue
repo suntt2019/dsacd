@@ -87,6 +87,8 @@
 
 <script>
 import { FindAll, Replacer } from '../js/KMP';
+import {Range} from "../js/utils";
+import {GetLowerText, GetUpperText} from "../js/text";
 
 export default {
   name: "FindAndReplace",
@@ -121,12 +123,8 @@ export default {
     tabChange(tab) {
       this.tab = tab;
     },
-    range(length) {
-      let ret = [];
-      for (let i = 0; i < length; i++) {
-        ret.push(i);
-      }
-      return ret;
+    range(x) {
+      return Range(x);
     },
     Find() {
       if (this.sharedData.selectedFile === null) {
@@ -165,26 +163,10 @@ export default {
       this.setLastSelected(this.find.points[this.find.selected], this.find.points[this.find.selected] + this.findLastData.target.length);
     },
     getLowerText(point) {
-      let lower = point;
-      let spaceCount = 0;
-      while (lower > 0 && lower > point - 10 && spaceCount < 2) {
-        if (this.sharedData.selectedFile.content[lower] === ' ') {
-          spaceCount++;
-        }
-        lower--;
-      }
-      return this.sharedData.selectedFile.content.substring(lower, point);
+      return GetLowerText(this.sharedData.selectedFile.content, point);
     },
     getUpperText(pointAfterWord) {
-      let upper = pointAfterWord;
-      let spaceCount = 0;
-      while (upper < this.sharedData.selectedFile.content.length && upper < pointAfterWord + 10 && spaceCount < 3) {
-        if (this.sharedData.selectedFile.content[upper] === ' ') {
-          spaceCount++;
-        }
-        upper++;
-      }
-      return this.sharedData.selectedFile.content.substring(pointAfterWord, upper);
+      return GetUpperText(this.sharedData.selectedFile.content, pointAfterWord);
     },
     findItemClick(i) {
       this.find.selected = i;
