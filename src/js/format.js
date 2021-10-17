@@ -25,7 +25,7 @@ function convertPunctuation(str) {
     return ret;
 }
 
-import {stopWords} from "./stop_words";
+import {stopWords} from "./stopWords";
 
 const customStopWords = [
     '', 'br',
@@ -82,4 +82,12 @@ export function FormatWords(wordsAndPoints) {
         retPoints.push(point);
     }
     return [retWords, retPoints];
+}
+
+/**
+ * @param {String} operand
+ * @return {String}
+ */
+export function FormatOperand(operand) {
+    return operand.toLowerCase();
 }

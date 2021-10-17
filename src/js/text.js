@@ -1,4 +1,3 @@
-
 export function GetLowerText(content, point) {
     let lower = point;
     let spaceCount = 0;
@@ -15,6 +14,7 @@ export function GetBodyText(content, point, length) {
     return content.substr(point, length);
 }
 
+// TODO: fix bug when the word contains the last char in the file.
 export function GetUpperText(content, pointAfterWord) {
     let upper = pointAfterWord;
     let spaceCount = 0;

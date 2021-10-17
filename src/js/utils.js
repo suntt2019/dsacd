@@ -5,3 +5,10 @@ export function Range(length) {
     }
     return ret;
 }
+
+export function Slice(array, count) {
+    if(count === -1) {
+        return array;
+    }
+    return array.slice(0, count);
+}

@@ -36,6 +36,9 @@ export class FileIndex {
     }
 
     tf(word) {
+        if(!this.map.Has(word)) {
+            return 0;
+        }
         return this.map.Get(word).length;
     }
 
@@ -138,7 +141,7 @@ export class WorkspaceIndex {
         let count = 0;
         for (let i in keys) {
             let k = keys[i];
-            if (this.filesIndexes[k].Has(word)) {
+            if (this.filesIndexes.Get(k).map.Has(word)) {
                 count++;
             }
         }

@@ -80,6 +80,9 @@
               <div v-show="showing_sidebar === 'search_replace'">
                 <FindAndReplace ref="findAndReplace" :shared-data="sharedData" :store-content="editorStoreContent" :reload-content="editorReloadContent" :set-last-selected="editorSetLastSelected"></FindAndReplace>
               </div>
+              <div v-show="showing_sidebar === 'search_plus'">
+                <AdvancedSearch :shared-data="sharedData" :set-last-selected="editorSetLastSelected" :checkout-file="checkoutFile"></AdvancedSearch>
+              </div>
               <div v-show="showing_sidebar === 'frequency'">
                 <Frequency :shared-data="sharedData" :set-last-selected="editorSetLastSelected" :checkout-file="checkoutFile"></Frequency>
               </div>

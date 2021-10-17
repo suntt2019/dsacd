@@ -8,6 +8,7 @@ import DummyEditorBar from "./components/DummyEditorBar";
 import EncodingPanel from "./components/EncodingPanel";
 import FindAndReplace from "./components/FindAndReplace";
 import Frequency from "./components/Frequency";
+import AdvancedSearch from "./components/AdvancedSearch";
 import './style/App.css';
 
 export default {
@@ -33,19 +34,19 @@ export default {
                 },
                 "search_replace": {
                     width: "30%",
-                    min_width: "10%",
+                    min_width: "20%",
                     max_width: "50%",
                     component: null,
                 },
                 "search_plus": {
-                    width: "40%",
-                    min_width: "10%",
-                    max_width: "50%",
+                    width: "30%",
+                    min_width: "30%",
+                    max_width: "60%",
                     component: null,
                 },
                 "frequency": {
-                    width: "50%",
-                    min_width: "10%",
+                    width: "60%",
+                    min_width: "20%",
                     max_width: "50%",
                     component: null,
                 },
@@ -121,6 +122,7 @@ export default {
             this.menuClose();
         },
         checkoutFile(selected, fileNode) {
+            // TODO: update file tree selected node
             // Store old file
             if (this.sharedData.selectedFile !== null && this.sharedData.selectedFile.kind === 'file') {
                 this.$refs.editor.StoreContent();
@@ -186,6 +188,7 @@ export default {
         DummyEditorBar,
         EncodingPanel,
         FindAndReplace,
-        Frequency
+        Frequency,
+        AdvancedSearch
     },
 };

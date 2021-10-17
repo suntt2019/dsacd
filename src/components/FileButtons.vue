@@ -45,7 +45,7 @@ export default {
     },
     async createFile(dir, name, content) {
       let handler = await dir.handler.getFileHandle(name, {create: true});
-      return new FileNode(name, dir, handler, content, this.sharedData.index);
+      return new FileNode(name, dir, handler, this.sharedData.index, content);
     },
     validName(dir, name) {
       for (let i in dir.children) {

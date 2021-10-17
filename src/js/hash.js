@@ -195,6 +195,56 @@ export class HashSet {
 }
 
 /**
+ * @param {HashSet} a
+ * @param {HashSet} b
+ * @return {HashSet}
+ */
+export function Union(a, b) {
+    let ret = new HashSet(a.hashTable.capacity);
+    let listA = a.List();
+    let listB = b.List();
+    for(let i in listA) {
+        ret.Add(listA[i]);
+    }
+    for(let i in listB) {
+        ret.Add(listB[i]);
+    }
+    return ret;
+}
+
+/**
+ * @param {HashSet} a
+ * @param {HashSet} b
+ * @return {HashSet}
+ */
+export function Intersection(a, b) {
+    let ret = new HashSet(a.hashTable.capacity);
+    let listA = a.List();
+    for(let i in listA) {
+        if(b.Has(listA[i])) {
+            ret.Add(listA[i]);
+        }
+    }
+    return ret;
+}
+
+/**
+ * @param {HashSet} a
+ * @param {HashSet} b
+ * @return {HashSet}
+ */
+export function Difference(a, b) {
+    let ret = new HashSet(a.hashTable.capacity);
+    let listA = a.List();
+    for(let i in listA) {
+        if(!b.Has(listA[i])) {
+            ret.Add(listA[i]);
+        }
+    }
+    return ret;
+}
+
+/**
  * Convert a string list to set.
  * @param {String[]} list
  * @param {Number} capacity
@@ -207,6 +257,22 @@ export function ListToSet(list, capacity = -1) {
     let ret = new HashSet(capacity);
     for(let i in list) {
         ret.Add(list[i]);
+    }
+    return ret;
+}
+
+/**
+ * @param {String[]} array
+ * @param {HashSet} target
+ * @return {String[]}
+ */
+export function Omit(array, target) {
+    let ret = [];
+    for(let i in array) {
+        if(target.Has(array[i])) {
+            continue;
+        }
+        ret.push(array[i]);
     }
     return ret;
 }
@@ -265,4 +331,10 @@ export class HashMap {
     SortedItems(greater) {
         return HeapSort(this.Items(), greater);
     }
+}
+
+export function MapToSet(map) {
+    let ret = new HashSet(1);
+    ret.hashTable = map.hashTable;
+    return ret;
 }

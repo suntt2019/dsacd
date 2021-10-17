@@ -83,6 +83,34 @@ function split(str, separator) {
 
 /**
  @param {string} str
+ @param {string[]} separators
+ @return {Number[][], String[][]}
+ */
+function multipleSplit(str, separators) {
+    let prefixArrays = [];
+    for(let i in separators) {
+        let sep = separators[i];
+        prefixArrays.push(findAll(str, sep));
+    }
+    let ret = [], points = [] ;
+    let start = 0;
+    for (let i = 0; i < str.length; i++) {
+        for(let j=0; j<separators.length; j++) {
+            if (prefixArrays[j][i] === separators[j].length) {
+                ret.push(str.substring(start, i - separators[j].length + 1));
+                points.push(start);
+                ret.push(separators[j]);
+                points.push(j);
+                start = i + 1;
+            }
+        }
+    }
+    ret.push(str.substring(start));
+    return [ret, points];
+}
+
+/**
+ @param {string} str
  @param {string} separator
  @return {Number[]}
  */
@@ -101,6 +129,17 @@ export function SplitWithPoints(str, separator) {
     assert(typeof str === 'string', "Input str of Split is not a string");
     assert(typeof separator === 'string', "Input separator of Split is not a string");
     return split(str, separator);
+}
+
+/**
+ @param {string} str
+ @param {string[]} separators
+ @return {String[]}
+ */
+export function MultipleSplit(str, separators) {
+    assert(typeof str === 'string', "Input str of Split is not a string");
+    assert(separators instanceof Array, "Input separator of Split is not an array");
+    return multipleSplit(str, separators)[0];
 }
 
 export class Replacer {
@@ -141,9 +180,7 @@ export class Replacer {
             + this.target
             + this.str.substring(this.nextReplace + this.source.length);
         this.lastReplaced = this.nextReplace + this.target.length;
-        let ret = this.find();
-        console.log(ret);
-        return ret;
+        return this.find();
     }
 
     GetPoints() {
@@ -153,4 +190,10 @@ export class Replacer {
     UpdateTarget(target) {
         this.target = target;
     }
+}
+
+export function ReplaceAll(str, source, target) {
+    let replacer = new Replacer(str, source, target);
+    while(replacer.Replace()); // with empty body
+    return replacer.str;
 }

@@ -15,7 +15,7 @@
     </a-row>
     <!--    TODO: use collapse instead of div-->
     <div
-        v-for="word in this.words.slice(0, wordCount)"
+        v-for="word in slice(this.words, wordCount)"
         v-bind:key="word.key"
         class="result-item"
     >
@@ -23,14 +23,14 @@
       TF=<label class="statistics">{{ word.value.sum }}</label>
       <div>
         <div
-            v-for="file in word.value.files.SortedItems((a, b)=>{return a.value.count<b.value.count}).slice(0,filesPreWord)"
+            v-for="file in slice(word.value.files.SortedItems((a, b)=>{return a.value.count<b.value.count}),filesPreWord)"
             v-bind:key="file.value.key"
             class="result-item child"
         >
           File <label class="word">{{file.value.file.name}}</label> (TF=<label class="statistics">{{file.value.count}}</label>)
           <div>
             <div
-                v-for="point in file.value.points.slice(0,resultsPerFile)"
+                v-for="point in slice(file.value.points,resultsPerFile)"
                 v-bind:key="point"
                 class="result-item child"
                 @click="highlightText(file.value.file, point, word.key.length)"
@@ -49,6 +49,7 @@
 
 <script>
 import {GetLowerText, GetUpperText} from "../js/text";
+import {Slice} from "../js/utils";
 
 export default {
   name: "Frequency",
@@ -80,6 +81,9 @@ export default {
       setTimeout( ()=>{
         this.setLastSelected(point, point + length);
       }, 1);
+    },
+    slice(array, count) {
+      return Slice(array, count);
     }
   }
 }
