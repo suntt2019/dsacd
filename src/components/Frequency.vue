@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import {Range} from "../js/utils";
 import {GetLowerText, GetUpperText} from "../js/text";
 
 export default {
@@ -67,9 +66,6 @@ export default {
       this.words = this.sharedData.index.map.SortedItems(function (a, b) {
         return a.value.sum < b.value.sum;
       });
-    },
-    range(x) {
-      return Range(x);
     },
     getLowerText(file, point) {
       return GetLowerText(file.content, point);

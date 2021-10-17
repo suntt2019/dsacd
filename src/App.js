@@ -88,7 +88,9 @@ export default {
                 if(key === 'frequency' || key === 'search_plus') {
                     this.sharedData.fileTree.LoadAll().then();
                 }
-
+                if(key === 'search_replace') {
+                    this.$refs.findAndReplace.ContentRefresh();
+                }
             }
             // update menu_keys to consist with showing_sidebar
             if(this.showing_sidebar === null) {
@@ -161,7 +163,7 @@ export default {
             return this.$refs.editor.SetLastSelected(start, end);
         },
         editorTextChange() {
-            this.$refs.findAndReplace.ReplaceNeedRefresh();
+            this.$refs.findAndReplace.ContentRefresh();
         },
         checkReopen() {
             this.editorSyncSaved();

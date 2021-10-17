@@ -6,7 +6,7 @@
           <a-icon slot="prefix" type="search" style="color: var(--c-selected-background); margin: 10px"/>
         </a-input>
         <a-row type="flex" justify="end">
-          <a-tooltip placement="bottom">
+          <a-tooltip placement="bottom" v-show="find.showPoints">
             <a-button @click="findSelectPrevious">∧</a-button>
             <template slot="title">
               <div style="text-align: center">
@@ -14,7 +14,7 @@
               </div>
             </template>
           </a-tooltip>
-          <a-tooltip placement="bottom">
+          <a-tooltip placement="bottom" v-show="find.showPoints">
             <a-button @click="findSelectNext">∨</a-button>
             <template slot="title">
               <div style="text-align: center">
@@ -26,7 +26,7 @@
         </a-row>
       </a-tab-pane>
       <a-tab-pane key="replace" tab="Replace">
-        <a-input v-model="replace.source" class="find-replace-input" id="replace-source-input" @change="ReplaceNeedRefresh">
+        <a-input v-model="replace.source" class="find-replace-input" id="replace-source-input" @change="ContentRefresh">
           <a-icon slot="prefix" type="search" style="color: var(--c-selected-background); margin: 10px"/>
         </a-input>
         <a-input v-model="replace.target" class="find-replace-input" id="replace-target-input" @change="replaceUpdateTarget">
@@ -117,14 +117,27 @@ export default {
       replaceLastData: {
         source: '',
       },
+      lastFileHash: 0,
     }
   },
+  // watch: {
+  //   'sharedData.selectedFile.hash': {
+  //     handler() {
+  //       this.checkHash();
+  //     },
+  //     immediate: true,
+  //     deep: true,
+  //   },
+  // },
   methods: {
     tabChange(tab) {
       this.tab = tab;
     },
     range(x) {
       return Range(x);
+    },
+    updateHash() {
+      this.lastFileHash = this.sharedData.selectedFile.hash;
     },
     Find() {
       if (this.sharedData.selectedFile === null) {
@@ -146,6 +159,7 @@ export default {
       } else {
         this.$message.success('Find completed', 0.2);
       }
+      this.updateHash();
     },
     findSelectPrevious() {
       if (this.find.selected > 0) {
@@ -172,7 +186,11 @@ export default {
       this.find.selected = i;
       this.findHighLight();
     },
-    ReplaceNeedRefresh() {
+    ContentRefresh() {
+      if(this.sharedData !== null && this.lastFileHash === this.sharedData.selectedFile.hash) {
+        return;
+      }
+      this.find.showPoints = false;
       this.replace.matched = false;
       this.replace.showPoints = false;
     },
@@ -198,6 +216,7 @@ export default {
         this.replace.matched = true;
         this.replace.selected = 0;
       }
+      this.updateHash();
     },
     replaceUpdateNextPlace() {
       this.replace.replacer.nextReplace = this.replace.points[this.replace.selected];
@@ -233,7 +252,7 @@ export default {
       this.reloadContent();
       this.replace.points = this.replace.replacer.GetPoints();
       if(this.replace.points.length === 0) {
-        this.ReplaceNeedRefresh();
+        this.ContentRefresh();
       }
       this.replace.selected = this.replaceFindSelected(this.replace.replacer.nextReplace);
       setTimeout(()=>{this.replaceHighLight();}, 1);
@@ -251,7 +270,7 @@ export default {
       this.reloadContent();
       this.replace.points = this.replace.replacer.GetPoints();
       if(this.replace.points.length === 0) {
-        this.ReplaceNeedRefresh();
+        this.ContentRefresh();
       }
       this.replace.selected = 0;
     }
