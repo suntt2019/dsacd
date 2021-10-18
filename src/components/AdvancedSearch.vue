@@ -24,6 +24,25 @@
         <a-button @click="search">Search</a-button>
       </a-space>
     </a-row>
+    Words and synonyms (with IDF):
+    <div>
+      <div
+          v-for="operand in this.operands"
+          v-bind:key="operand.word"
+          class="result-item word-item"
+      >
+        {{operand.word}}:
+        <a-tag
+            v-for="synonym in operand.synonyms"
+            v-bind:key="synonym.synonym"
+            class="result-item child synonym-tag"
+        >
+          <label>{{synonym.synonym}}</label>
+          (<label class="statistics">{{synonym.IDF.toFixed(2)}}</label>)
+        </a-tag>
+      </div>
+    </div>
+    Search results:
     <div>
       <div
           v-for="file in slice(this.resultList, filesCount)"
@@ -51,7 +70,7 @@
 
 <script>
 import {GetLowerText, GetUpperText} from "../js/text";
-import {ConvertExpression, CalculateSet} from "../js/advancedSearch";
+import {ConvertExpression, CalculateSet, GetOperands, InfixToPostfix, AddSynonyms} from "../js/advancedSearch";
 import {Slice} from "../js/utils";
 import {LoadSynonyms} from "../js/synonym";
 
@@ -67,6 +86,7 @@ export default {
       lastTarget: '',
       relatedWords: false,
       resultList: [],
+      operands: [],
     }
   },
   mounted() {
@@ -85,7 +105,14 @@ export default {
     search() {
       this.lastTarget = this.target;
       // try {
-        let postfix = ConvertExpression(this.target, this.synonymCount);
+        let infix = ConvertExpression(this.target);
+        console.log('infix:', infix);
+        this.operands = GetOperands(infix, this.synonymCount, this.sharedData.index);
+        console.log('operands:', this.operands);
+        infix = AddSynonyms(infix, this.synonymCount);
+        console.log('infix(with synonyms):', infix);
+        let postfix = InfixToPostfix(infix);
+        console.log('postfix:', postfix);
         this.resultList = CalculateSet(postfix, this.sharedData.index);
       // } catch (e) {
       //   this.$message.error(`Invalid expression "${this.target}".`, 0.5);
@@ -131,4 +158,12 @@ export default {
   background-color: var(--c-selected-background) !important;
 }
 
+.word-item{
+  padding: 10px;
+}
+
+.synonym-tag {
+  margin: 3px !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
 </style>

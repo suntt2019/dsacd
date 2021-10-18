@@ -48,20 +48,18 @@ function setOperatorSetPrepared() {
     }
 }
 
-export function ConvertExpression(str, synonymCount) {
-    let infix = Omit(
+export function ConvertExpression(str) {
+    return Omit(
         MultipleSplit(
             ReplaceAll(str, 'NOT', 'ALL SUB'),
             operators),
         ListToSet(['', ' '])
     );
-    console.log('infix:', infix);
-    infix = addSynonyms(infix, synonymCount);
-    console.log('infix(with synonyms):', infix);
+}
+
+export function InfixToPostfix(infix) {
     setOperatorSetPrepared();
-    let postfix = InFixExpressionToPostfix(infix, setOperatorSet);
-    console.log('postfix:', postfix);
-    return postfix;
+    return InFixExpressionToPostfix(infix, setOperatorSet);
 }
 
 export function CalculateSet(postfix, workspace) {
@@ -180,7 +178,7 @@ function wordsPoints(words, fileIndex) {
     });
 }
 
-function addSynonyms(infix, synonymCount) {
+export function AddSynonyms(infix, synonymCount) {
     operatorSetPrepared();
     let ret = [];
     for (let i in infix) {
@@ -195,12 +193,36 @@ function addSynonyms(infix, synonymCount) {
 }
 
 function synonymExpression(word, synonymCount) {
-    let ret = ['(', word]
+    let ret = ['(', word];
     let synonyms = Slice(GetSynonyms(word), synonymCount);
     console.log('synonyms[', word, ']=', synonyms);
     for (let i in synonyms) {
         ret = ret.concat(['OR', synonyms[i]]);
     }
     ret.push(')');
+    return ret;
+}
+
+export function GetOperands(infix, synonymCount, workspace) {
+    operatorSetPrepared();
+    let ret = [];
+    for (let i in infix) {
+        let word = infix[i];
+        if (!operatorSet.Has(word)) {
+            let ss = Slice([word].concat(GetSynonyms(word)), synonymCount);
+            let synonyms = [];
+            for(let j in ss) {
+                let synonym = ss[j];
+                synonyms.push({
+                    synonym: synonym,
+                    IDF: workspace.IDF(synonym),
+                })
+            }
+            ret.push({
+                'word': word,
+                'synonyms': synonyms,
+            });
+        }
+    }
     return ret;
 }
