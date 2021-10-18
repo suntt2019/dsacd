@@ -39,9 +39,9 @@ export default {
                     component: null,
                 },
                 "search_plus": {
-                    width: "30%",
+                    width: "60%",
                     min_width: "30%",
-                    max_width: "60%",
+                    max_width: "80%",
                     component: null,
                 },
                 "frequency": {

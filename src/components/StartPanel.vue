@@ -53,6 +53,9 @@ export default {
         this.startEdit();
       });
     },
+    storeLater() {
+      this.$message.warning('Feature coming soon', 1);
+    }
   },
 }
 </script>

@@ -187,7 +187,7 @@ export default {
       this.findHighLight();
     },
     ContentRefresh() {
-      if(this.sharedData !== null && this.lastFileHash === this.sharedData.selectedFile.hash) {
+      if(this.sharedData.selectedFile !== null && this.lastFileHash === this.sharedData.selectedFile.hash) {
         return;
       }
       this.find.showPoints = false;

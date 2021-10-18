@@ -145,6 +145,10 @@ export class WorkspaceIndex {
                 count++;
             }
         }
-        return Math.log10(keys.length / count);
+        if(count === 0) {
+            return 0;
+        } else {
+            return Math.log10(keys.length / count);
+        }
     }
 }

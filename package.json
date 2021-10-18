@@ -10,6 +10,7 @@
   "dependencies": {
     "@antv/g6": "^4.3.7",
     "ant-design-vue": "^1.7.8",
+    "axios": "^0.23.0",
     "core-js": "^3.6.5",
     "less": "3.0.4",
     "less-loader": "^6.0.0",

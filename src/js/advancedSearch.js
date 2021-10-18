@@ -1,12 +1,23 @@
-import {Union, Intersection, Difference, HashMap, ListToSet, Omit, MapToSet, HashSet} from "./hash";
-import {InFixExpressionToPostfix, ExecutePostfixExpression} from "./expression";
+import {Difference, HashMap, HashSet, Intersection, ListToSet, MapToSet, Omit, Union} from "./hash";
+import {ExecutePostfixExpression, InFixExpressionToPostfix} from "./expression";
 import {MultipleSplit, ReplaceAll} from "./KMP";
 import {HeapSort} from "./heap";
 import {FileIndex} from "./invertedIndex";
+import {GetSynonyms} from './synonym';
+import {FormatOperand} from "./format";
+import {Slice} from "./utils";
 
 const operators = [
-    ' ', '(', ')', 'AND', 'OR', 'NOT'
+    ' ', '(', ')', 'AND', 'OR', 'NOT', 'SUB', 'ALL'
 ];
+
+let operatorSet = undefined;
+
+function operatorSetPrepared() {
+    if (operatorSet === undefined) {
+        operatorSet = ListToSet(operators);
+    }
+}
 
 const setOperatorList = [
     {
@@ -29,23 +40,25 @@ const setOperatorList = [
 let setOperatorSet = undefined;
 
 function setOperatorSetPrepared() {
-    if(setOperatorSet === undefined) {
+    if (setOperatorSet === undefined) {
         setOperatorSet = new HashMap(setOperatorList.length);
-        for(let i in setOperatorList) {
+        for (let i in setOperatorList) {
             setOperatorSet.Set(setOperatorList[i].operator, setOperatorList[i]);
         }
     }
 }
 
-export function ConvertExpression(str) {
+export function ConvertExpression(str, synonymCount) {
     let infix = Omit(
         MultipleSplit(
             ReplaceAll(str, 'NOT', 'ALL SUB'),
             operators),
-        ListToSet(['',' '])
+        ListToSet(['', ' '])
     );
-    setOperatorSetPrepared();
     console.log('infix:', infix);
+    infix = addSynonyms(infix, synonymCount);
+    console.log('infix(with synonyms):', infix);
+    setOperatorSetPrepared();
     let postfix = InFixExpressionToPostfix(infix, setOperatorSet);
     console.log('postfix:', postfix);
     return postfix;
@@ -55,15 +68,15 @@ export function CalculateSet(postfix, workspace) {
     setOperatorSetPrepared();
     let pf = [];
     let words = [];
-    for(let i in postfix) {
+    for (let i in postfix) {
         let element = postfix[i];
-        if(setOperatorSet.Has(element)) {
+        if (setOperatorSet.Has(element)) {
             pf.push(element);
         } else if (element === 'ALL') {
             pf.push(MapToSet(workspace.filesIndexes));
         } else {
             words.push(element);
-            if(!workspace.map.Has(element)) {
+            if (!workspace.map.Has(element)) {
                 pf.push(new HashSet(FileIndex.MapSize));
             } else {
                 pf.push(MapToSet(workspace.map.Get(element).files));
@@ -74,7 +87,7 @@ export function CalculateSet(postfix, workspace) {
     let resultSet = ExecutePostfixExpression(pf, setOperatorSet);
     let ret = [];
     let l = resultSet.List();
-    for(let i in l) {
+    for (let i in l) {
         let fileIndex = workspace.filesIndexes.Get(l[i]);
         ret.push({
             value: {
@@ -84,7 +97,9 @@ export function CalculateSet(postfix, workspace) {
             }
         });
     }
-    ret = HeapSort(ret, (a, b)=>{return a.value.count<b.value.count});
+    ret = HeapSort(ret, (a, b) => {
+        return a.value.count < b.value.count
+    });
     return ret;
 }
 
@@ -117,9 +132,9 @@ const weightOperatorList = [
 let weightOperatorSet = undefined;
 
 function weightOperatorSetPrepared() {
-    if(weightOperatorSet === undefined) {
+    if (weightOperatorSet === undefined) {
         weightOperatorSet = new HashMap(weightOperatorList.length);
-        for(let i in weightOperatorList) {
+        for (let i in weightOperatorList) {
             weightOperatorSet.Set(weightOperatorList[i].operator, weightOperatorList[i]);
         }
     }
@@ -128,9 +143,9 @@ function weightOperatorSetPrepared() {
 function calculateWeight(postfix, fileIndex, workspace) {
     weightOperatorSetPrepared();
     let pf = [];
-    for(let i in postfix) {
+    for (let i in postfix) {
         let element = postfix[i];
-        if(setOperatorSet.Has(element)) {
+        if (setOperatorSet.Has(element)) {
             pf.push(element);
         } else if (element === 'ALL') {
             pf.push(INF);
@@ -139,8 +154,7 @@ function calculateWeight(postfix, fileIndex, workspace) {
         }
     }
     console.log('Converted postfix:', pf);
-    let ret = ExecutePostfixExpression(pf, weightOperatorSet);
-    return ret;
+    return ExecutePostfixExpression(pf, weightOperatorSet);
 }
 
 function wordWeight(word, fileIndex, workspace) {
@@ -149,17 +163,44 @@ function wordWeight(word, fileIndex, workspace) {
 
 function wordsPoints(words, fileIndex) {
     let ret = [];
-    for(let i in words) {
-        if(!fileIndex.map.Has(words[i])) {
+    for (let i in words) {
+        if (!fileIndex.map.Has(words[i])) {
             continue;
         }
         let points = fileIndex.map.Get(words[i]);
-        for(let j in points) {
+        for (let j in points) {
             ret.push({
                 word: words[i],
                 point: points[j]
             });
         }
     }
-    return HeapSort(ret, (a,b)=>{return a.point>b.point;});
+    return HeapSort(ret, (a, b) => {
+        return a.point > b.point;
+    });
+}
+
+function addSynonyms(infix, synonymCount) {
+    operatorSetPrepared();
+    let ret = [];
+    for (let i in infix) {
+        let word = infix[i];
+        if (operatorSet.Has(word)) {
+            ret.push(word);
+        } else {
+            ret = ret.concat(synonymExpression(FormatOperand(word), synonymCount));
+        }
+    }
+    return ret;
+}
+
+function synonymExpression(word, synonymCount) {
+    let ret = ['(', word]
+    let synonyms = Slice(GetSynonyms(word), synonymCount);
+    console.log('synonyms[', word, ']=', synonyms);
+    for (let i in synonyms) {
+        ret = ret.concat(['OR', synonyms[i]]);
+    }
+    ret.push(')');
+    return ret;
 }

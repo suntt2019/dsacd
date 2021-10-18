@@ -9,14 +9,18 @@
       files, with
       <a-input class="as-input width-limited" v-model="resultsPerFile"></a-input>
       words each file.
+      <br>
+      Use
+      <a-input class="as-input width-limited" v-model="synonymCount"></a-input>
+      synonyms each word.
       (-1 means unlimited)
     </div>
     <a-row type="flex" justify="end">
       <a-space :size="10">
         <div>Got {{this.resultList.length}} files.</div>
-        <a-button @click="toggleRW" size="small" :class="this.relatedWords ? 'active' : ''">
-          Related words: {{ this.relatedWords ? 'On' : 'Off' }}
-        </a-button>
+<!--        <a-button @click="toggleRW" size="small" :class="this.relatedWords ? 'active' : ''">-->
+<!--          Related words: {{ this.relatedWords ? 'On' : 'Off' }}-->
+<!--        </a-button>-->
         <a-button @click="search">Search</a-button>
       </a-space>
     </a-row>
@@ -49,6 +53,7 @@
 import {GetLowerText, GetUpperText} from "../js/text";
 import {ConvertExpression, CalculateSet} from "../js/advancedSearch";
 import {Slice} from "../js/utils";
+import {LoadSynonyms} from "../js/synonym";
 
 export default {
   name: "AdvancedSearch",
@@ -57,25 +62,35 @@ export default {
     return {
       filesCount: -1,
       resultsPerFile: -1,
+      synonymCount: 2,
       target: '',
       lastTarget: '',
       relatedWords: false,
       resultList: [],
     }
   },
+  mounted() {
+    this.loadSynonyms();
+  },
   methods: {
+    loadSynonyms() {
+      this.$message.loading({content:`Loading synonyms...`, key:'synonym', duration: 0.2});
+      LoadSynonyms(()=>{
+        this.$message.success({content: 'Loaded synonyms', key:'synonym', duration: 0.2});
+      });
+    },
     toggleRW() {
       this.relatedWords = !this.relatedWords;
     },
     search() {
       this.lastTarget = this.target;
-      try {
-        let postfix = ConvertExpression(this.target);
+      // try {
+        let postfix = ConvertExpression(this.target, this.synonymCount);
         this.resultList = CalculateSet(postfix, this.sharedData.index);
-      } catch (e) {
-        this.$message.error(`Invalid expression "${this.target}".`, 0.5);
-        return;
-      }
+      // } catch (e) {
+      //   this.$message.error(`Invalid expression "${this.target}".`, 0.5);
+        // return;
+      // }
       this.$message.success(`Finish advanced search, got ${this.resultList.length} results.`, 0.5);
     },
     getLowerText(file, point) {
