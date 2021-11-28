@@ -9,7 +9,7 @@ export class FileIndex {
     /**
      * Construct a file index form it content
      * @param {String} content
-     * @param {Object} fileNode, FileNode in files.js
+     * @param {Object} fileNode, FileNode in files.lib
      * @param {WorkspaceIndex} workspaceIndex
      */
     constructor(content,  fileNode, workspaceIndex) {
@@ -53,7 +53,6 @@ export class FileIndex {
     }
 }
 
-// TODO: test this
 export class WorkspaceIndex {
     static MapSize = 200000;
     static FileHashSetSize = 1000;
@@ -100,7 +99,6 @@ export class WorkspaceIndex {
                     sum: value.sum - v.length,
                 };
             }
-            // console.log('update TF of word "' + k + '" in workspace:', this.map.Get(k), '->', newValue);
             assert(newValue.sum >= 0, 'Negative value generated in workspace index');
             this.map.Set(k, newValue);
         }

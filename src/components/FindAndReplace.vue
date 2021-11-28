@@ -86,9 +86,9 @@
 </template>
 
 <script>
-import { FindAll, Replacer } from '../js/KMP';
-import {Range} from "../js/utils";
-import {GetLowerText, GetUpperText} from "../js/text";
+import { FindAll, Replacer } from '../lib/KMP';
+import {Range} from "../lib/utils";
+import {GetLowerText, GetUpperText} from "../lib/text";
 
 export default {
   name: "FindAndReplace",

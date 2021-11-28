@@ -64,8 +64,8 @@ body {
   margin-top: 20px;
 }
 
-.start-btn > .warn {
-  color: var(--c-warn);
+.start-btn > .slight {
+  color: var(--c-slight);
 }
 
 /********** both bar **********/

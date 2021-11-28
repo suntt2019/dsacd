@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import {FileNode} from "../js/files";
+import {FileNode} from "../lib/files";
 import * as assert from "assert";
 
 export default {

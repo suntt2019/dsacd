@@ -69,10 +69,10 @@
 </template>
 
 <script>
-import {GetLowerText, GetUpperText} from "../js/text";
-import {ConvertExpression, CalculateSet, GetOperands, InfixToPostfix, AddSynonyms} from "../js/advancedSearch";
-import {Slice} from "../js/utils";
-import {LoadSynonyms} from "../js/synonym";
+import {GetLowerText, GetUpperText} from "../lib/text";
+import {ConvertExpression, CalculateSet, GetOperands, InfixToPostfix, AddSynonyms} from "../lib/advancedSearch";
+import {Slice} from "../lib/utils";
+import {LoadSynonyms} from "../lib/synonym";
 
 export default {
   name: "AdvancedSearch",

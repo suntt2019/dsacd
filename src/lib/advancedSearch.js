@@ -209,7 +209,7 @@ export function GetOperands(infix, synonymCount, workspace) {
     for (let i in infix) {
         let word = infix[i];
         if (!operatorSet.Has(word)) {
-            let ss = Slice([word].concat(GetSynonyms(word)), synonymCount);
+            let ss = Slice([word].concat(GetSynonyms(word)), synonymCount+1);
             let synonyms = [];
             for(let j in ss) {
                 let synonym = ss[j];

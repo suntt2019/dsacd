@@ -137,10 +137,6 @@ class HuffmanTree {
     }
 
     ToGraphData() {
-        // const width = 1200, height = 500;
-        // let floorCount = this.GetHeight() + 1;
-        // let ySpace = height / floorCount;
-        // let xSpace = width / (Math.pow(2, floorCount) + 1);
         let xSpace = 50;
         let ySpace = 100;
         let xCount = 0;

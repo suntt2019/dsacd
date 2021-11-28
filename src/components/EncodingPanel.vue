@@ -54,9 +54,9 @@
 </template>
 
 <script>
-import {BuildTree, ImportTree, Encode, Decode} from '../js/huffman';
-import {ZeroOneStringToArr, ArrToZeroOneString, base64} from '../js/base64';
-import {RevealGraph} from "../js/graph";
+import {BuildTree, ImportTree, Encode, Decode} from '../lib/huffman';
+import {ZeroOneStringToArr, ArrToZeroOneString, base64} from '../lib/base64';
+import {RevealGraph} from "../lib/graph";
 
 export default {
   name: "EncodingPanel",

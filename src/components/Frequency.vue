@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import {GetLowerText, GetUpperText} from "../js/text";
-import {Slice} from "../js/utils";
+import {GetLowerText, GetUpperText} from "../lib/text";
+import {Slice} from "../lib/utils";
 
 export default {
   name: "Frequency",

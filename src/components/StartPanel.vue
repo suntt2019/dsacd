@@ -19,9 +19,9 @@
       </a-col>
       <a-col class="gutter-row" :span="8">
         <div class="gutter-box">
-          <a-button @click="startEdit" class="start-btn">
+          <a-button @click="storeLater" class="start-btn">
             <label>Store files later</label>
-            <p class="warn">May lost data<br>before saving</p>
+            <p class="slight">(Coming Soon)<br> - </p>
           </a-button>
         </div>
       </a-col>
@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import {GetDir, FileTree} from "../js/files";
-import {WorkspaceIndex} from "../js/invertedIndex";
+import {GetDir, FileTree} from "../lib/files";
+import {WorkspaceIndex} from "../lib/invertedIndex";
 
 export default {
   name: 'StartPanel',

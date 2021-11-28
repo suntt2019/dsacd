@@ -14,8 +14,6 @@ export function ExecutePostfixExpression(elements, operators) {
             assert(stack.length >= 2, 'Invalid postfix expression with too many operators');
             let b = stack.pop();
             let a = stack.pop();
-            // console.log('operate:', a, b, e);
-            // console.log('result:', f(a, b));
             stack.push(f(a, b));
         } else { // e is an operand
             stack.push(elements[i]);
