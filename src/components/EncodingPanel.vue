@@ -175,4 +175,8 @@ textarea {
 .ant-message-notice-content {
   background-color: var(--c-common-background) !important;
 }
+::selection {
+  color: var(--c-selected-text) !important;
+  background: var(--c-selected-text-background) !important;
+}
 </style>

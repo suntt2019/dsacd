@@ -1,14 +1,49 @@
 <template>
   <div>
     <a-space :size="10">
-      <a-icon type="file-add" :style="{ fontSize: '24px' }" @click="CreateFile"/>
-      <a-icon type="file" :style="{ fontSize: '24px' }" @click="LoadFile"/>
-      <a-icon type="save" :style="{ fontSize: '24px' }" @click="SaveFile"/>
+      <a-tooltip placement="bottomLeft">
+        <template slot="title">
+          <span><b>Create file</b><br>Create a new file.</span>
+        </template>
+        <a-icon type="file-add" :style="{ fontSize: '24px' }" @click="CreateFile"/>
+      </a-tooltip>
+
+      <a-tooltip placement="bottomLeft">
+        <template slot="title">
+          <span><b>Import file</b><br>Open an existing file and <br>import it into the opened folder.</span>
+        </template>
+        <a-icon type="file" :style="{ fontSize: '24px' }" @click="LoadFile"/>
+      </a-tooltip>
+
+      <a-tooltip placement="bottomLeft">
+        <template slot="title">
+          <span><b>Save file</b><br>Save the currently opened file.</span>
+        </template>
+        <a-icon type="save" :style="{ fontSize: '24px' }" @click="SaveFile"/>
+      </a-tooltip>
+
 <!--      Improvement: set the button gray when "this.sharedData.selectedFile!==null && this.sharedData.selectedFile.kind === 'file' && !this.sharedData.selectedFile.saved"-->
-      <a-icon type="appstore" :style="{ fontSize: '24px' }" @click="saveFiles"/>
+      <a-tooltip placement="bottomLeft">
+        <template slot="title">
+          <span><b>Save all</b><br>Save all the files.</span>
+        </template>
+        <a-icon type="appstore" :style="{ fontSize: '24px' }" @click="saveFiles"/>
+      </a-tooltip>
 <!--      Improvement: set the button gray when "this.sharedData.fileTree.root.unsavedChildren.size !== 0"-->
-      <a-icon type="sync" v-if="!sharedData.settings.liveSavedSync" :style="{ fontSize: '24px' }" @click="syncFilesSaved"/>
-      <a-icon type="database" :style="{ fontSize: '24px' }" @click="LoadFiles"/>
+
+      <a-tooltip placement="bottomLeft">
+        <template slot="title">
+          <span><b>Load all</b><br>Load and index all the files.</span>
+        </template>
+        <a-icon type="database" :style="{ fontSize: '24px' }" @click="LoadFiles"/>
+      </a-tooltip>
+
+      <a-tooltip placement="bottomLeft" v-if="!sharedData.settings.liveSavedSync">
+        <template slot="title">
+          <span><b>Sync saved</b><br>Sync saved information<br>for all the files.</span>
+        </template>
+        <a-icon type="sync" :style="{ fontSize: '24px' }" @click="syncFilesSaved"/>
+      </a-tooltip>
     </a-space>
     <a-modal v-model="showInputModal" title="New file" @ok="nameInputOK">
       <a-input id="name-input" v-model="nameInput" allow-clear placeholder="New file name" />

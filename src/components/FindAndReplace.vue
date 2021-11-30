@@ -325,4 +325,8 @@ div.ant-tabs-content.ant-tabs-content-animated.ant-tabs-left-content {
 .selected {
   background: var(--c-selected-background);
 }
+::selection {
+  color: var(--c-selected-text) !important;
+  background: var(--c-selected-text-background) !important;
+}
 </style>

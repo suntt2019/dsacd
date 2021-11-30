@@ -118,6 +118,7 @@ export default {
             this.switchEditorBar("dummy");
         },
         reloadWorkspace() {
+            this.title = 'DSACD';
             this.switchEditorBar("start");
             this.menuClose();
         },
@@ -175,6 +176,9 @@ export default {
             } else {
                 this.reloadWorkspace();
             }
+        },
+        comingSoon() {
+            this.checkoutFile(true, this.sharedData.selectedFile);
         }
     },
     components: {

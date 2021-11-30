@@ -28,6 +28,7 @@
         </a-tooltip>
         <div id="header-title">
           <label>{{title}}</label>
+          <a-icon type="close" v-if="title !== 'DSACD'" style="margin-left: 20px" @click="comingSoon"></a-icon>
         </div>
       </a-layout-header>
 <!--menu-->
@@ -46,19 +47,39 @@
                   theme="dark"
               >
                 <a-menu-item key="files" @click="menuClick">
-                  <a-icon :style="{fontSize: '30px'}" type="file" />
+                  <a-tooltip placement="right">
+                    <template slot="title">
+                      <span><b>File management</b><br>Open, create, select and save files.</span>
+                    </template>
+                    <a-icon :style="{fontSize: '30px'}" type="file" />
+                  </a-tooltip>
                 </a-menu-item>
-                <a-menu-item key="encode_decode" @click="menuClick">
-                  <a-icon :style="{fontSize: '30px'}" type="barcode" />
-                </a-menu-item>
+
                 <a-menu-item key="search_replace" @click="menuClick">
-                  <a-icon :style="{fontSize: '30px'}" type="search" />
+                  <a-tooltip placement="right">
+                    <template slot="title">
+                      <span><b>Find and replace</b><br>Find and replace in a single file.</span>
+                    </template>
+                    <a-icon :style="{fontSize: '30px'}" type="search" />
+                  </a-tooltip>
                 </a-menu-item>
+
                 <a-menu-item key="search_plus" @click="menuClick">
-                  <a-icon :style="{fontSize: '30px'}" type="file-search" />
+                  <a-tooltip placement="right">
+                    <template slot="title">
+                      <span><b>Multiple file search</b><br>Search related content in all files.</span>
+                    </template>
+                    <a-icon :style="{fontSize: '30px'}" type="file-search" />
+                  </a-tooltip>
                 </a-menu-item>
+
                 <a-menu-item key="frequency" @click="menuClick">
-                  <a-icon :style="{fontSize: '30px'}" type="bar-chart" />
+                  <a-tooltip placement="right">
+                    <template slot="title">
+                      <span><b>Word frequency statistics</b><br>Ranking of words by frequency.</span>
+                    </template>
+                    <a-icon :style="{fontSize: '30px'}" type="bar-chart" />
+                  </a-tooltip>
                 </a-menu-item>
               </a-menu>
             </a-tooltip>
@@ -71,7 +92,7 @@
             <div id="sidebar-container" class="pane" v-show="showing_sidebar !== null" :style="{ minWidth: '10%', width: '30%', maxWidth: '50%', overflow: 'auto'}">
               <div v-show="showing_sidebar === 'files'">
                 <FileButtons ref="fileButtons" :shared-data="sharedData" :editorSyncSaved="editorSyncSaved"></FileButtons>
-                <a-divider />
+                <a-divider style="margin-top: 34px; margin-bottom: 20px"/>
                 <FileTree :shared-data="sharedData" :checkout-file="checkoutFile"></FileTree>
               </div>
               <div v-show="showing_sidebar === 'encode_decode'">

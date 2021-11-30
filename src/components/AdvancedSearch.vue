@@ -5,13 +5,13 @@
     </a-input>
     <div>
       Show
-      <a-input class="as-input width-limited" v-model="filesCount"></a-input>
+      <a-input-number v-model="filesCount" :min="-1"/>
       files, with
-      <a-input class="as-input width-limited" v-model="resultsPerFile"></a-input>
+      <a-input-number v-model="resultsPerFile" :min="-1"/>
       words each file.
       <br>
       Use
-      <a-input class="as-input width-limited" v-model="synonymCount"></a-input>
+      <a-input-number v-model="synonymCount" :min="-1"/>
       synonyms each word.
       (-1 means unlimited)
     </div>
@@ -142,28 +142,27 @@ export default {
 </script>
 
 <style>
-
 .as-input {
   background: var(--editor-bar-background) !important;
   border: none !important;
   margin: 5px !important;
 }
-
 .width-limited {
   width: 50px !important;
 }
-
 .active {
   color: var(--c-selected-text) !important;
   background-color: var(--c-selected-background) !important;
 }
-
 .word-item{
   padding: 10px;
 }
-
 .synonym-tag {
   margin: 3px !important;
   background-color: rgba(0, 0, 0, 0.1) !important;
+}
+::selection {
+  color: var(--c-selected-text) !important;
+  background: var(--c-selected-text-background) !important;
 }
 </style>

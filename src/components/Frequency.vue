@@ -2,11 +2,11 @@
   <div>
     <div>
       Show
-      <a-input v-model="wordCount" class="frequency-input"></a-input>
+      <a-input-number v-model="wordCount" :min="-1"/>
       words,
-      <a-input v-model="filesPreWord" class="frequency-input"></a-input>
+      <a-input-number v-model="filesPreWord" :min="-1"/>
       file / word,
-      <a-input v-model="resultsPerFile" class="frequency-input"></a-input>
+      <a-input-number v-model="resultsPerFile" :min="-1"/>
       result / file.
       (-1 means unlimited)
     </div>
@@ -108,4 +108,21 @@ export default {
   margin: 10px !important;
   width: 50px !important;
 }
+::selection {
+  color: var(--c-selected-text) !important;
+  background: var(--c-selected-text-background) !important;
+}
+.ant-input-number {
+  border: none !important;
+  background: var(--c-text-area-background) !important;
+  margin: 10px !important;
+  width: 50px !important;
+}
+.ant-input-number-handler-up, .ant-input-number-handler-down {
+  background: var(--c-button-background) !important;
+}
+.ant-input-number-handler-wrap {
+  background: transparent !important;
+}
+
 </style>
