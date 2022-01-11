@@ -3,10 +3,8 @@
 
 ### What is this?
 
-* My course design for the data structure and algorithm course
+* A text editor which can edit, encode / decode, search text.
 
-* A text editor which can edit, encode / decode, search text
+* My course design for the data structure and algorithm course (on branch `main`).
 
-### Prototype
-
-The features are listed in the prototype(in the publish "Prototype") and its introduction.
+* My term project for the human-computer interaction course (on branch `hci`).
